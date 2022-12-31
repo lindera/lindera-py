@@ -14,7 +14,6 @@ def main():
 
     # output the tokens
     for token in tokens:
-        print(type(token))
         print(f"token: {token.text}, details: {token.details}")
 
 

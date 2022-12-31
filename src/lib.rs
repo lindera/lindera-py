@@ -3,17 +3,8 @@ use lindera::Token;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
-
 use std::fs::File;
 use std::io::{BufReader, Read};
-
-
-
-/// Formats the sum of two numbers as string.
-#[pyfunction]
-fn sum_as_string(a: usize, b: usize) -> PyResult<String> {
-    Ok((a + b).to_string())
-}
 
 #[pyclass(name = "Analyzer")]
 struct PyAnalyzer {
@@ -23,11 +14,12 @@ struct PyAnalyzer {
 #[pymethods]
 impl PyAnalyzer {
     #[new]
-    fn new(config_path: &str) -> PyResult<Self> {
+    fn new(config_path: Option<&str>) -> PyResult<Self> {
         let mut config_bytes = vec![];
-        let mut config_file = BufReader::new(File::open(config_path)?);
-
-        config_file.read_to_end(&mut config_bytes)?;
+        if let Some(config_path) = config_path {
+            let mut config_file = BufReader::new(File::open(config_path)?);
+            config_file.read_to_end(&mut config_bytes)?;
+        }
 
         Ok(Self {
             inner: Analyzer::from_slice(&config_bytes).unwrap(),
@@ -74,8 +66,6 @@ fn lindera_py(_py: Python, m: &PyModule) -> PyResult<()> {
 
 #[cfg(test)]
 mod tests {
-    
-
     #[test]
     fn it_works() {}
 }
