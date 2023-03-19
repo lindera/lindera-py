@@ -13,7 +13,7 @@ git clone https://github.com/lindera-morphology/lindera-py.git
 maturin develop --release
 ```
 
-[maturin](https://github.com/PyO3/maturin)のインストール方法は[here](https://github.com/PyO3/maturin)を参照してください.
+[Maturin](https://github.com/PyO3/maturin)のインストール方法は[here](https://github.com/PyO3/maturin)を参照してください.
 
 ## Config file
 
