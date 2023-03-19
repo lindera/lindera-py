@@ -1,6 +1,6 @@
 # lindera-py
 
-日本語の形態素解析エンジン[Lindera](https://github.com/lindera-morphology/lindera)のpython bindingsです.
+日本語の形態素解析エンジン[Lindera](https://github.com/lindera-morphology/lindera)のPython bindingです.
 
 ## Usage
 
