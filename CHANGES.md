@@ -4,4 +4,5 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+- Update dependencies #3 @mosuka
 - 簡単なexampleケースが実行できるエンジンを実装 #1 @higumachan
