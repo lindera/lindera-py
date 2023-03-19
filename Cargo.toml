@@ -1,17 +1,20 @@
 [package]
 name = "lindera-py"
-version = "0.18.0"
+version = "0.23.0"
 edition = "2021"
+description = "Python binding for Lindera."
+documentation = "https://docs.rs/lindera-py"
+homepage = "https://github.com/lindera-morphology/lindera-py"
+repository = "https://github.com/lindera-morphology/lindera-py"
 readme = "README.md"
-keywords = ["morphological", "analysis", "library"]
+keywords = ["morphological", "analysis", "library", "python"]
 categories = ["text-processing"]
 license = "MIT"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
 name = "lindera_py"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = { version = "0.17.3", features = ["extension-module"] }
-lindera = { git = "https://github.com/lindera-morphology/lindera.git", features = ["ipadic"] }
+pyo3 = { version = "0.18.1", features = ["extension-module"] }
+lindera = { version = "0.23.0", features = ["ipadic"] }
