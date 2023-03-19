@@ -1,6 +1,6 @@
 # lindera-py
 
-Python bindings for [Lindera](https://github.com/lindera-morphology/lindera), a Japanese morphological analysis engine.
+Python binding for [Lindera](https://github.com/lindera-morphology/lindera), a Japanese morphological analysis engine.
 
 ## Usage
 
