@@ -1,10 +1,11 @@
-use lindera::analyzer::Analyzer;
-use lindera::Token;
+use std::fs::File;
+use std::io::{BufReader, Read};
+
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
-use std::fs::File;
-use std::io::{BufReader, Read};
+use lindera::analyzer::Analyzer;
+use lindera::{FilteredToken};
 
 #[pyclass(name = "Analyzer")]
 struct PyAnalyzer {
@@ -45,11 +46,11 @@ struct PyToken {
     #[pyo3(get)]
     text: String,
     #[pyo3(get)]
-    details: Option<Vec<String>>,
+    details: Vec<String>,
 }
 
-impl<'a> From<Token<'a>> for PyToken {
-    fn from(token: Token) -> Self {
+impl From<FilteredToken> for PyToken {
+    fn from(token: FilteredToken) -> Self {
         PyToken {
             text: token.text.to_string(),
             details: token.details,

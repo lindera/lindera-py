@@ -19,4 +19,3 @@ maturin develop --release
 
 設定ファイルの仕様は[lindera]()と共有しています.
 [こちら](https://github.com/lindera-morphology/lindera/blob/main/resources/lindera_ipadic_conf.json)を参考にして設定を行ってください．
-
