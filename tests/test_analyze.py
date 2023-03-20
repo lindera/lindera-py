@@ -2,20 +2,22 @@ from pathlib import Path
 from lindera_py import Analyzer
 
 
-def main():
+def test_analyze():
     lindera_conf_path = Path("resources") / "lindera_ipadic_conf.json"
     analyzer = Analyzer(config_path=str(lindera_conf_path))
 
     text = "Ｌｉｎｄｅｒａは形態素解析ｴﾝｼﾞﾝです。ユーザー辞書も利用可能です。"
-    print(text)
 
     # tokenize the text
     tokens = analyzer.analyze(text)
 
-    # output the tokens
-    for token in tokens:
-        print(f"token: {token.text}, details: {token.details}")
+    assert tokens[0].text == "Lindera"
+    assert tokens[1].text == "形態素"
+    assert tokens[2].text == "解析"
+    assert tokens[3].text == "エンジン"
+    assert tokens[4].text == "ユーザ"
+    assert tokens[5].text == "辞書"
+    assert tokens[6].text == "利用"
+    assert tokens[7].text == "可能"
 
-
-if __name__ == "__main__":
-    main()
+    assert len(tokens) == 8

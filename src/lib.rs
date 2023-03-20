@@ -5,7 +5,7 @@ use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
 use lindera::analyzer::Analyzer;
-use lindera::{FilteredToken};
+use lindera::FilteredToken;
 
 #[pyclass(name = "Analyzer")]
 struct PyAnalyzer {
