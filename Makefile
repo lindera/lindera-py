@@ -12,13 +12,13 @@ fmt:
 .PHONY: tests
 test:
 	cargo test
-	python3 -m pytest tests
+	python -m pytest tests
 
 develop:
 	maturin develop --release
 
 build:
-	maturin build -i python3 --release
+	maturin build -i python --release
 
 install:
 	pip install . lindera_py
