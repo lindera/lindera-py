@@ -1,11 +1,8 @@
-use std::fs::File;
-use std::io::{BufReader, Read};
+use std::path::Path;
 
-use pyo3::exceptions::PyValueError;
-use pyo3::prelude::*;
+use pyo3::{exceptions::PyValueError, prelude::*};
 
-use lindera::analyzer::Analyzer;
-use lindera::FilteredToken;
+use lindera::{analyzer::Analyzer, FilteredToken};
 
 #[pyclass(name = "Analyzer")]
 struct PyAnalyzer {
@@ -15,15 +12,9 @@ struct PyAnalyzer {
 #[pymethods]
 impl PyAnalyzer {
     #[new]
-    fn new(config_path: Option<&str>) -> PyResult<Self> {
-        let mut config_bytes = vec![];
-        if let Some(config_path) = config_path {
-            let mut config_file = BufReader::new(File::open(config_path)?);
-            config_file.read_to_end(&mut config_bytes)?;
-        }
-
+    fn new(config_path: &str) -> PyResult<Self> {
         Ok(Self {
-            inner: Analyzer::from_slice(&config_bytes).unwrap(),
+            inner: Analyzer::from_file(Path::new(config_path)).unwrap(),
         })
     }
 

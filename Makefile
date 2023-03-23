@@ -1,6 +1,7 @@
 clean:
 	cargo clean
 	find . | grep -E "(__pycache__|\.pyc|\.pyo$$)" | xargs rm -rf
+	rm -rf .pytest_cache
 
 lint:
 	black --check examples tests
@@ -12,7 +13,6 @@ fmt:
 .PHONY: tests
 test:
 	cargo test
-	python -m pytest tests
 
 develop:
 	maturin develop --release
@@ -25,3 +25,6 @@ install:
 
 uninstall:
 	pip uninstall -y lindera_py
+
+pytest:
+	python -m pytest tests
