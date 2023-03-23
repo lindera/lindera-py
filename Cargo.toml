@@ -16,5 +16,5 @@ name = "lindera_py"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = { version = "0.18.1", features = ["extension-module"] }
 lindera = { version = "0.23.0", features = ["ipadic"] }
+pyo3 = { version = "0.18.1", features = ["extension-module"] }

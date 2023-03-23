@@ -1,21 +1,21 @@
 # lindera-py
 
-日本語の形態素解析エンジン[Lindera](https://github.com/lindera-morphology/lindera)のPython bindingです.
+Python binding for [Lindera](https://github.com/lindera-morphology/lindera), a Japanese morphological analysis engine.
 
 ## Usage
 
-このライブラリは現時点では実験的な実装のため、PyPIでは公開していません.
+This library is experimental at this time and is not available on PyPI.
 
-利用したい場合は自分の利用しているインタプリタ環境上で以下の手順でビルドしてください.
+If you want to use it, please build it on your interpreter environment using `maturin` as follows.
 
 ```shell
 git clone https://github.com/lindera-morphology/lindera-py.git
 maturin develop --release
 ```
 
-[Maturin](https://github.com/PyO3/maturin)のインストール方法は[here](https://github.com/PyO3/maturin)を参照してください.
+See [here](https://github.com/PyO3/maturin) for how to install [Maturin](https://github.com/PyO3/maturin).
 
 ## Config file
 
-設定ファイルの仕様は[Lindera]()と共有しています.
-[こちら](https://github.com/lindera-morphology/lindera/blob/main/resources/lindera_ipadic_conf.json)を参考にして設定を行ってください．
+The specification of the configuration file is shared with [Lindera]().
+Please refer to [here](https://github.com/lindera-morphology/lindera/blob/main/resources/lindera_ipadic_conf.json) for configuration.

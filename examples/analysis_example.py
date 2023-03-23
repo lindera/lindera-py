@@ -4,7 +4,7 @@ from lindera_py import Analyzer
 
 def main():
     lindera_conf_path = Path("resources") / "lindera_ipadic_conf.json"
-    analyzer = Analyzer(config_path=str(lindera_conf_path))
+    analyzer = Analyzer(str(lindera_conf_path))
 
     text = "Ｌｉｎｄｅｒａは形態素解析ｴﾝｼﾞﾝです。ユーザー辞書も利用可能です。"
     print(text)
