@@ -1,34 +1,67 @@
-use std::path::Path;
+pub mod analyzer;
+pub mod tokenizer;
 
+use std::{path::PathBuf, str::FromStr};
+
+use analyzer::PyAnalyzer;
 use pyo3::{exceptions::PyValueError, prelude::*};
 
-use lindera::{analyzer::Analyzer, FilteredToken};
+use lindera::{
+    dictionary::{DictionaryConfig, UserDictionaryConfig},
+    DictionaryKind, FilteredToken,
+};
+use tokenizer::{PyTokenizer, PyTokenizerConfig};
 
-#[pyclass(name = "Analyzer")]
-struct PyAnalyzer {
-    inner: Analyzer,
+#[derive(Clone)]
+#[pyclass(name = "DictionaryConfig")]
+struct PyDictionaryConfig {
+    inner: DictionaryConfig,
 }
 
 #[pymethods]
-impl PyAnalyzer {
+impl PyDictionaryConfig {
     #[new]
-    fn new(config_path: &str) -> PyResult<Self> {
+    fn new(kind: Option<&str>, path: Option<&str>) -> PyResult<Self> {
+        let k = match kind {
+            Some(kind_str) => Some(
+                DictionaryKind::from_str(kind_str)
+                    .map_err(|_err| PyValueError::new_err("Invalid kind"))?,
+            ),
+            None => None,
+        };
+        let p = match path {
+            Some(path_str) => Some(PathBuf::from(path_str)),
+            None => None,
+        };
+
         Ok(Self {
-            inner: Analyzer::from_file(Path::new(config_path)).unwrap(),
+            inner: DictionaryConfig { kind: k, path: p },
         })
     }
+}
 
-    fn analyze(&self, text: &str) -> PyResult<Vec<PyToken>> {
-        let mut text = text.to_string();
-        let tokens = self
-            .inner
-            .analyze(&mut text)
-            .map_err(|e| PyValueError::new_err(format!("{:?}", e)))?
-            .into_iter()
-            .map(|x| PyToken::from(x))
-            .collect();
+#[derive(Clone)]
+#[pyclass(name = "UserDictionaryConfig")]
+struct PyUserDictionaryConfig {
+    inner: UserDictionaryConfig,
+}
 
-        Ok(tokens)
+#[pymethods]
+impl PyUserDictionaryConfig {
+    #[new]
+    fn new(path: &str, kind: Option<&str>) -> PyResult<Self> {
+        let p = PathBuf::from(path);
+        let k = match kind {
+            Some(kind_str) => Some(
+                DictionaryKind::from_str(kind_str)
+                    .map_err(|_err| PyValueError::new_err("Invalid kind"))?,
+            ),
+            None => None,
+        };
+
+        Ok(Self {
+            inner: UserDictionaryConfig { path: p, kind: k },
+        })
     }
 }
 
@@ -53,6 +86,11 @@ impl From<FilteredToken> for PyToken {
 #[pymodule]
 fn lindera_py(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<PyAnalyzer>()?;
+    m.add_class::<PyTokenizer>()?;
+    m.add_class::<PyDictionaryConfig>()?;
+    m.add_class::<PyUserDictionaryConfig>()?;
+    m.add_class::<PyTokenizerConfig>()?;
+
     Ok(())
 }
 
