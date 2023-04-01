@@ -7,9 +7,11 @@ use dictionary::{PyDictionaryConfig, PyUserDictionaryConfig};
 use pyo3::prelude::*;
 
 use lindera::FilteredToken;
-use tokenizer::{PyTokenizer, PyTokenizerConfig};
 
-use crate::dictionary::{build_dictionary, build_user_dictionary};
+use crate::{
+    dictionary::{build_dictionary, build_user_dictionary},
+    tokenizer::{PyTokenizer, PyTokenizerConfig},
+};
 
 #[pyclass(name = "Token")]
 struct PyToken {
