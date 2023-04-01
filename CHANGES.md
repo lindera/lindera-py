@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+- Add builder #8 @mosuka
 - Add Tokenizer #7 @mosuka
 - Refactoring #6 @mosuka
 - Remove .idea directory #5 @mosuka
