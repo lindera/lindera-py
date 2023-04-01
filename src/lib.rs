@@ -1,69 +1,17 @@
 pub mod analyzer;
+pub mod dictionary;
 pub mod tokenizer;
 
-use std::{path::PathBuf, str::FromStr};
-
 use analyzer::PyAnalyzer;
-use pyo3::{exceptions::PyValueError, prelude::*};
+use dictionary::{PyDictionaryConfig, PyUserDictionaryConfig};
+use pyo3::prelude::*;
 
-use lindera::{
-    dictionary::{DictionaryConfig, UserDictionaryConfig},
-    DictionaryKind, FilteredToken,
+use lindera::FilteredToken;
+
+use crate::{
+    dictionary::{build_dictionary, build_user_dictionary},
+    tokenizer::{PyTokenizer, PyTokenizerConfig},
 };
-use tokenizer::{PyTokenizer, PyTokenizerConfig};
-
-#[derive(Clone)]
-#[pyclass(name = "DictionaryConfig")]
-struct PyDictionaryConfig {
-    inner: DictionaryConfig,
-}
-
-#[pymethods]
-impl PyDictionaryConfig {
-    #[new]
-    fn new(kind: Option<&str>, path: Option<&str>) -> PyResult<Self> {
-        let k = match kind {
-            Some(kind_str) => Some(
-                DictionaryKind::from_str(kind_str)
-                    .map_err(|_err| PyValueError::new_err("Invalid kind"))?,
-            ),
-            None => None,
-        };
-        let p = match path {
-            Some(path_str) => Some(PathBuf::from(path_str)),
-            None => None,
-        };
-
-        Ok(Self {
-            inner: DictionaryConfig { kind: k, path: p },
-        })
-    }
-}
-
-#[derive(Clone)]
-#[pyclass(name = "UserDictionaryConfig")]
-struct PyUserDictionaryConfig {
-    inner: UserDictionaryConfig,
-}
-
-#[pymethods]
-impl PyUserDictionaryConfig {
-    #[new]
-    fn new(path: &str, kind: Option<&str>) -> PyResult<Self> {
-        let p = PathBuf::from(path);
-        let k = match kind {
-            Some(kind_str) => Some(
-                DictionaryKind::from_str(kind_str)
-                    .map_err(|_err| PyValueError::new_err("Invalid kind"))?,
-            ),
-            None => None,
-        };
-
-        Ok(Self {
-            inner: UserDictionaryConfig { path: p, kind: k },
-        })
-    }
-}
 
 #[pyclass(name = "Token")]
 struct PyToken {
@@ -90,6 +38,8 @@ fn lindera_py(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<PyDictionaryConfig>()?;
     m.add_class::<PyUserDictionaryConfig>()?;
     m.add_class::<PyTokenizerConfig>()?;
+    m.add_function(wrap_pyfunction!(build_dictionary, m)?)?;
+    m.add_function(wrap_pyfunction!(build_user_dictionary, m)?)?;
 
     Ok(())
 }
