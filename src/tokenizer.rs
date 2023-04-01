@@ -8,7 +8,10 @@ use lindera::{
     FilteredToken,
 };
 
-use crate::{PyDictionaryConfig, PyToken, PyUserDictionaryConfig};
+use crate::{
+    dictionary::{PyDictionaryConfig, PyUserDictionaryConfig},
+    PyToken,
+};
 
 #[derive(Clone)]
 #[pyclass(name = "TokenizerConfig")]
