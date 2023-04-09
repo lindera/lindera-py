@@ -1,7 +1,19 @@
+#[cfg(any(
+    feature = "ipadic-filter",
+    feature = "unidic-filter",
+    feature = "ko-dic-filter",
+    feature = "cc-cedict-filter",
+))]
 pub mod analyzer;
 pub mod dictionary;
 pub mod tokenizer;
 
+#[cfg(any(
+    feature = "ipadic-filter",
+    feature = "unidic-filter",
+    feature = "ko-dic-filter",
+    feature = "cc-cedict-filter",
+))]
 use analyzer::PyAnalyzer;
 use dictionary::{PyDictionaryConfig, PyUserDictionaryConfig};
 use pyo3::prelude::*;
@@ -33,6 +45,12 @@ impl From<FilteredToken> for PyToken {
 /// A Python module implemented in Rust.
 #[pymodule]
 fn lindera_py(_py: Python, m: &PyModule) -> PyResult<()> {
+    #[cfg(any(
+        feature = "ipadic-filter",
+        feature = "unidic-filter",
+        feature = "ko-dic-filter",
+        feature = "cc-cedict-filter",
+    ))]
     m.add_class::<PyAnalyzer>()?;
     m.add_class::<PyTokenizer>()?;
     m.add_class::<PyDictionaryConfig>()?;
