@@ -2,11 +2,9 @@ use std::str::FromStr;
 
 use pyo3::{exceptions::PyValueError, prelude::*};
 
-use lindera::{
-    mode::Mode,
-    tokenizer::{Tokenizer, TokenizerConfig},
-    FilteredToken,
-};
+use lindera_core::mode::Mode;
+use lindera_filter::token::FilteredToken;
+use lindera_tokenizer::tokenizer::{Tokenizer, TokenizerConfig};
 
 use crate::{
     dictionary::{PyDictionaryConfig, PyUserDictionaryConfig},

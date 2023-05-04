@@ -18,7 +18,7 @@ use analyzer::PyAnalyzer;
 use dictionary::{PyDictionaryConfig, PyUserDictionaryConfig};
 use pyo3::prelude::*;
 
-use lindera::FilteredToken;
+use lindera_filter::token::FilteredToken;
 
 use crate::{
     dictionary::{build_dictionary, build_user_dictionary},

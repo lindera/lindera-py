@@ -2,13 +2,10 @@ use std::{path::PathBuf, str::FromStr};
 
 use pyo3::{exceptions::PyValueError, prelude::*};
 
-use lindera::{
-    dictionary::{
-        build_dictionary as lindera_build_dictionary,
-        build_user_dictionary as lindera_build_user_dictionary, DictionaryConfig,
-        UserDictionaryConfig,
-    },
-    DictionaryKind,
+use lindera_dictionary::{
+    build_dictionary as lindera_build_dictionary,
+    build_user_dictionary as lindera_build_user_dictionary, DictionaryConfig, DictionaryKind,
+    UserDictionaryConfig,
 };
 
 #[derive(Clone)]

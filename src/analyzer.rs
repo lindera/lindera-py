@@ -2,7 +2,7 @@ use std::path::Path;
 
 use pyo3::{exceptions::PyValueError, prelude::*};
 
-use lindera::analyzer::Analyzer;
+use lindera_analyzer::analyzer::Analyzer;
 
 use crate::PyToken;
 
