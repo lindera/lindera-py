@@ -1,43 +1,18 @@
 use std::str::FromStr;
 
-use pyo3::{exceptions::PyValueError, prelude::*};
+use lindera::token_filter::TokenFilterLoader;
+use pyo3::exceptions::PyValueError;
+use pyo3::prelude::*;
+use pyo3::types::PyDict;
+use serde_json::json;
 
-use lindera::{
-    mode::Mode,
-    tokenizer::{Tokenizer, TokenizerConfig},
-    FilteredToken,
-};
+use lindera::character_filter::CharacterFilterLoader;
+use lindera::mode::Mode;
+use lindera::tokenizer::Tokenizer;
 
-use crate::{
-    dictionary::{PyDictionaryConfig, PyUserDictionaryConfig},
-    PyToken,
-};
-
-#[derive(Clone)]
-#[pyclass(name = "TokenizerConfig")]
-pub struct PyTokenizerConfig {
-    inner: TokenizerConfig,
-}
-
-#[pymethods]
-impl PyTokenizerConfig {
-    #[new]
-    fn new(
-        dic_config: PyDictionaryConfig,
-        mode: &str,
-        user_dic_config: Option<PyUserDictionaryConfig>,
-    ) -> PyResult<Self> {
-        let m = Mode::from_str(mode).map_err(|_err| PyValueError::new_err("Invalid mode"))?;
-
-        Ok(Self {
-            inner: TokenizerConfig {
-                dictionary: dic_config.inner,
-                mode: m,
-                user_dictionary: user_dic_config.map(|x| x.inner),
-            },
-        })
-    }
-}
+use crate::dictionary::{PyDictionary, PyUserDictionary};
+use crate::token::PyToken;
+use crate::util::pydict_to_value;
 
 #[pyclass(name = "Tokenizer")]
 pub struct PyTokenizer {
@@ -47,42 +22,72 @@ pub struct PyTokenizer {
 #[pymethods]
 impl PyTokenizer {
     #[new]
-    fn new(config: PyTokenizerConfig) -> PyResult<Self> {
+    #[pyo3(signature = (mode, dictionary, user_dictionary=None))]
+    fn new(
+        mode: &str,
+        dictionary: PyDictionary,
+        user_dictionary: Option<PyUserDictionary>,
+    ) -> PyResult<Self> {
+        let m = Mode::from_str(mode).map_err(|_err| PyValueError::new_err("Invalid mode"))?;
+        let u = user_dictionary.map(|d| d.inner);
         Ok(Self {
-            inner: Tokenizer::from_config(config.inner)
-                .map_err(|_err| PyValueError::new_err("Invalid config"))?,
+            inner: Tokenizer::new(m, dictionary.inner, u),
         })
     }
 
+    #[pyo3(signature = (name, **args))]
+    fn append_character_filter(
+        &mut self,
+        name: &str,
+        args: Option<&Bound<'_, PyDict>>,
+    ) -> PyResult<()> {
+        let character_filter_args = match args {
+            Some(a) => pydict_to_value(a)?,
+            None => json!({}),
+        };
+
+        let filter = CharacterFilterLoader::load_from_value(name, &character_filter_args)
+            .map_err(|_err| PyValueError::new_err("Invalid character filter"))?;
+        self.inner.append_character_filter(filter);
+
+        Ok(())
+    }
+
+    #[pyo3(signature = (name, **args))]
+    fn append_token_filter(
+        &mut self,
+        name: &str,
+        args: Option<&Bound<'_, PyDict>>,
+    ) -> PyResult<()> {
+        let token_filter_args = match args {
+            Some(a) => pydict_to_value(a)?,
+            None => json!({}),
+        };
+
+        let filter = TokenFilterLoader::load_from_value(name, &token_filter_args)
+            .map_err(|_err| PyValueError::new_err("Invalid token filter"))?;
+        self.inner.append_token_filter(filter);
+
+        Ok(())
+    }
+
+    #[pyo3(signature = (text))]
     fn tokenize(&self, text: &str) -> PyResult<Vec<PyToken>> {
-        let tokens = self
+        let mut tokens = self
             .inner
             .tokenize(text)
-            .map_err(|_err| PyValueError::new_err("Tokenize error"))?;
+            .map_err(|_err| PyValueError::new_err("Invalid token filter"))?;
 
-        let mut py_tokens = Vec::new();
-        for token in tokens.clone().iter_mut() {
-            py_tokens.push(PyToken::from(FilteredToken {
-                text: token.text.to_string(),
-                byte_start: token.byte_start,
-                byte_end: token.byte_end,
-                position: token.position,
-                position_length: token.position_length,
-                details: token
-                    .get_details()
-                    .ok_or_else(|| PyValueError::new_err("Invalid token details"))?
-                    .iter()
-                    .map(|s| s.to_string())
-                    .collect::<Vec<String>>(),
-            }));
-        }
-
-        Ok(py_tokens)
+        Ok(tokens
+            .iter_mut()
+            .map(|t| PyToken {
+                text: t.text.to_owned().to_string(),
+                byte_start: t.byte_start,
+                byte_end: t.byte_end,
+                position: t.position,
+                position_length: t.position_length,
+                details: t.details().iter().map(|d| d.to_string()).collect(),
+            })
+            .collect())
     }
-}
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {}
 }

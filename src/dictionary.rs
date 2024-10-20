@@ -1,91 +1,78 @@
-use std::{path::PathBuf, str::FromStr};
+use std::path::PathBuf;
+use std::str::FromStr;
 
 use pyo3::{exceptions::PyValueError, prelude::*};
 
-use lindera::{
-    dictionary::{
-        build_dictionary as lindera_build_dictionary,
-        build_user_dictionary as lindera_build_user_dictionary, DictionaryConfig,
-        UserDictionaryConfig,
-    },
-    DictionaryKind,
+use lindera::dictionary::{
+    load_dictionary_from_kind, load_dictionary_from_path, load_user_dictionary_from_bin,
+    load_user_dictionary_from_csv, Dictionary, DictionaryKind, UserDictionary,
 };
-
+#[pyclass(name = "Dictionary")]
 #[derive(Clone)]
-#[pyclass(name = "DictionaryConfig")]
-pub struct PyDictionaryConfig {
-    pub inner: DictionaryConfig,
+pub struct PyDictionary {
+    pub inner: Dictionary,
 }
 
-#[pymethods]
-impl PyDictionaryConfig {
-    #[new]
-    fn new(kind: Option<&str>, path: Option<&str>) -> PyResult<Self> {
-        let k = match kind {
-            Some(kind_str) => Some(
-                DictionaryKind::from_str(kind_str)
-                    .map_err(|_err| PyValueError::new_err("Invalid kind"))?,
-            ),
-            None => None,
-        };
-        let p = match path {
-            Some(path_str) => Some(PathBuf::from(path_str)),
-            None => None,
-        };
-
-        Ok(Self {
-            inner: DictionaryConfig { kind: k, path: p },
-        })
-    }
-}
-
+#[pyclass(name = "UserDictionary")]
 #[derive(Clone)]
-#[pyclass(name = "UserDictionaryConfig")]
-pub struct PyUserDictionaryConfig {
-    pub inner: UserDictionaryConfig,
+pub struct PyUserDictionary {
+    pub inner: UserDictionary,
 }
 
-#[pymethods]
-impl PyUserDictionaryConfig {
-    #[new]
-    fn new(path: &str, kind: Option<&str>) -> PyResult<Self> {
-        let p = PathBuf::from(path);
-        let k = match kind {
-            Some(kind_str) => Some(
-                DictionaryKind::from_str(kind_str)
-                    .map_err(|_err| PyValueError::new_err("Invalid kind"))?,
-            ),
-            None => None,
-        };
+#[pyfunction]
+#[pyo3(signature = (kind=None, path=None))]
+pub fn load_dictionary(kind: Option<&str>, path: Option<&str>) -> PyResult<PyDictionary> {
+    match (kind, path) {
+        (Some(kind_str), None) => {
+            let k = DictionaryKind::from_str(kind_str)
+                .map_err(|_err| PyValueError::new_err("Invalid kind"))?;
+            let dictionary = load_dictionary_from_kind(k).map_err(|err| {
+                PyValueError::new_err(format!("Failed to load dictionary: {}", err))
+            })?;
 
-        Ok(Self {
-            inner: UserDictionaryConfig { path: p, kind: k },
-        })
+            Ok(PyDictionary { inner: dictionary })
+        }
+        (None, Some(path_str)) => {
+            let p = PathBuf::from(path_str);
+            let dictionary = load_dictionary_from_path(p.as_path()).map_err(|err| {
+                PyValueError::new_err(format!("Failed to load dictionary: {}", err))
+            })?;
+
+            Ok(PyDictionary { inner: dictionary })
+        }
+        _ => Err(PyValueError::new_err("Invalid arguments")),
     }
 }
 
 #[pyfunction]
-pub fn build_dictionary(kind: &str, input_dir: &str, output_dir: &str) -> PyResult<()> {
-    lindera_build_dictionary(
-        DictionaryKind::from_str(kind).map_err(|_err| PyValueError::new_err("Invalid kind"))?,
-        &PathBuf::from(input_dir),
-        &PathBuf::from(output_dir),
-    )
-    .map_err(|_err| PyValueError::new_err("Failed to build dictionary"))
-}
+#[pyo3(signature = (path, kind=None))]
+pub fn load_user_dictionary(path: &str, kind: Option<&str>) -> PyResult<PyUserDictionary> {
+    let p = PathBuf::from(path);
+    let ext = p
+        .extension()
+        .and_then(|ext| ext.to_str())
+        .ok_or_else(|| PyValueError::new_err("Invalid file path"))?;
+    match (ext, kind) {
+        ("csv", Some(kind_str)) => {
+            let k = DictionaryKind::from_str(kind_str)
+                .map_err(|_err| PyValueError::new_err("Invalid kind"))?;
+            let user_dictionary = load_user_dictionary_from_csv(k, p).map_err(|err| {
+                PyValueError::new_err(format!("Failed to load user dictionary: {}", err))
+            })?;
 
-#[pyfunction]
-pub fn build_user_dictionary(kind: &str, input_file: &str, output_dir: &str) -> PyResult<()> {
-    lindera_build_user_dictionary(
-        DictionaryKind::from_str(kind).map_err(|_err| PyValueError::new_err("Invalid kind"))?,
-        &PathBuf::from(input_file),
-        &PathBuf::from(output_dir),
-    )
-    .map_err(|_err| PyValueError::new_err("Failed to build user dictionary"))
-}
+            Ok(PyUserDictionary {
+                inner: user_dictionary,
+            })
+        }
+        ("bin", None) => {
+            let user_dictionary = load_user_dictionary_from_bin(p).map_err(|err| {
+                PyValueError::new_err(format!("Failed to load user dictionary: {}", err))
+            })?;
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {}
+            Ok(PyUserDictionary {
+                inner: user_dictionary,
+            })
+        }
+        _ => Err(PyValueError::new_err("Invalid arguments")),
+    }
 }
