@@ -1,12 +1,11 @@
-name: CI
+name: Release
 
 on:
-  push:
-    branches:
-      - main
-      - master
-  pull_request:
   workflow_dispatch:
+
+  push:
+    tags:
+      - "v*.*.*"
 
 jobs:
   linux:

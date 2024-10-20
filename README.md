@@ -2,6 +2,20 @@
 
 Python binding for [Lindera](https://github.com/lindera-morphology/lindera), a Japanese morphological analysis engine.
 
+
+```shell
+$ pyenv local 3.12.3
+
+$ python -m venv .venv
+
+$ source .venv/bin/actibate
+
+$ poetry update
+
+$ poetry run maturin develop
+```
+
+
 ## Usage
 
 This library is experimental at this time and is not available on PyPI.
