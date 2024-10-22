@@ -1,6 +1,6 @@
 [package]
 name = "lindera-py"
-version = "0.23.1"
+version = "0.34.0"
 edition = "2021"
 description = "Python binding for Lindera."
 documentation = "https://docs.rs/lindera-py"
@@ -26,8 +26,7 @@ compress = ["lindera/compress"]  # Compress dictionaries
 
 [dependencies]
 pyo3 = { version = "0.22.5", features = ["extension-module"] }
-serde = { version = "1.0.210", features = ["derive"] }
-serde_json = "1.0.131"
+serde = { version = "1.0.211", features = ["derive"] }
+serde_json = "1.0.132"
 
-# lindera = "0.33.0"
-lindera = { path = "../lindera/lindera" }
+lindera = "0.34.0"
