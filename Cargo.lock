@@ -370,7 +370,9 @@ checksum = "d8adc4bb1803a324070e64a98ae98f38934d91957a99cfb3a43dcbc01bc56439"
 
 [[package]]
 name = "lindera"
-version = "0.33.0"
+version = "0.34.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3d8a3402357ae620c400c9db789676724cd5a2d7ac25b1fc67902f343b41efaa"
 dependencies = [
  "anyhow",
  "bincode",
@@ -397,7 +399,9 @@ dependencies = [
 
 [[package]]
 name = "lindera-cc-cedict"
-version = "0.33.0"
+version = "0.34.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "399f64899bedcafb39c25c563f7bd5140bdf6af6dfe0efee15b4e373d5c535fa"
 dependencies = [
  "bincode",
  "byteorder",
@@ -407,7 +411,9 @@ dependencies = [
 
 [[package]]
 name = "lindera-dictionary"
-version = "0.33.0"
+version = "0.34.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7dbc99abb14e33848ea3bd4aeb542c714702b33ba9876f96a9f38af9307a0349"
 dependencies = [
  "anyhow",
  "bincode",
@@ -430,7 +436,9 @@ dependencies = [
 
 [[package]]
 name = "lindera-ipadic"
-version = "0.33.0"
+version = "0.34.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d1beecdc66d04c6ab4114bb7b4acc567f0c922c54940d209657c9161bca0d213"
 dependencies = [
  "bincode",
  "byteorder",
@@ -440,7 +448,9 @@ dependencies = [
 
 [[package]]
 name = "lindera-ipadic-neologd"
-version = "0.33.0"
+version = "0.34.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9df406909d1397cad6f3d6d806ccc3bf898042156b3bf1da06d605983320fe4a"
 dependencies = [
  "bincode",
  "byteorder",
@@ -450,7 +460,9 @@ dependencies = [
 
 [[package]]
 name = "lindera-ko-dic"
-version = "0.33.0"
+version = "0.34.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "68c33cf46684a395b49707ed946902c2cb7fac2cde1e3b7a246792f63490758f"
 dependencies = [
  "bincode",
  "byteorder",
@@ -460,7 +472,7 @@ dependencies = [
 
 [[package]]
 name = "lindera-py"
-version = "0.23.1"
+version = "0.34.0"
 dependencies = [
  "lindera",
  "pyo3",
@@ -470,7 +482,9 @@ dependencies = [
 
 [[package]]
 name = "lindera-unidic"
-version = "0.33.0"
+version = "0.34.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ddb92100475d76f8291e397197cd15905cadfb6f79e212db6f11724f15742b95"
 dependencies = [
  "bincode",
  "byteorder",
@@ -725,18 +739,18 @@ checksum = "4501abdff3ae82a1c1b477a17252eb69cee9e66eb915c1abaa4f44d873df9f09"
 
 [[package]]
 name = "serde"
-version = "1.0.210"
+version = "1.0.211"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c8e3592472072e6e22e0a54d5904d9febf8508f65fb8552499a1abc7d1078c3a"
+checksum = "1ac55e59090389fb9f0dd9e0f3c09615afed1d19094284d0b200441f13550793"
 dependencies = [
  "serde_derive",
 ]
 
 [[package]]
 name = "serde_derive"
-version = "1.0.210"
+version = "1.0.211"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "243902eda00fad750862fc144cea25caca5e20d615af0a81bee94ca738f1df1f"
+checksum = "54be4f245ce16bc58d57ef2716271d0d4519e0f6defa147f6e081005bcb278ff"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -745,9 +759,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.131"
+version = "1.0.132"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "67d42a0bd4ac281beff598909bb56a86acaf979b84483e1c79c10dcaf98f8cf3"
+checksum = "d726bfaff4b320266d395898905d0eba0345aae23b54aee3a737e260fd46db03"
 dependencies = [
  "itoa",
  "memchr",
@@ -803,9 +817,9 @@ checksum = "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
 
 [[package]]
 name = "syn"
-version = "2.0.77"
+version = "2.0.82"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9f35bcdf61fd8e7be6caf75f429fdca8beb3ed76584befb503b1569faee373ed"
+checksum = "83540f837a8afc019423a8edb95b52a8effe46957ee402287f4292fae35be021"
 dependencies = [
  "proc-macro2",
  "quote",
