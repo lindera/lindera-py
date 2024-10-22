@@ -9,7 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 maturin = "^1.7.1"
-patchelf = "^0.18.0.0"
+patchelf = "^0.17.2.1"
 
 
 [tool.poetry.group.dev.dependencies]
