@@ -52,27 +52,40 @@ pub fn load_user_dictionary(path: &str, kind: Option<&str>) -> PyResult<PyUserDi
         .extension()
         .and_then(|ext| ext.to_str())
         .ok_or_else(|| PyValueError::new_err("Invalid file path"))?;
-    match (ext, kind) {
-        ("csv", Some(kind_str)) => {
-            let k = DictionaryKind::from_str(kind_str)
-                .map_err(|_err| PyValueError::new_err("Invalid kind"))?;
-            let user_dictionary = load_user_dictionary_from_csv(k, p).map_err(|err| {
-                PyValueError::new_err(format!("Failed to load user dictionary: {}", err))
-            })?;
+    match ext {
+        "csv" => match kind {
+            Some(kind) => {
+                let k = DictionaryKind::from_str(kind)
+                    .map_err(|_err| PyValueError::new_err("Invalid kind"))?;
+                let user_dictionary = load_user_dictionary_from_csv(k, p).map_err(|err| {
+                    PyValueError::new_err(format!("Failed to load user dictionary: {}", err))
+                })?;
 
-            Ok(PyUserDictionary {
-                inner: user_dictionary,
-            })
-        }
-        ("bin", None) => {
-            let user_dictionary = load_user_dictionary_from_bin(p).map_err(|err| {
-                PyValueError::new_err(format!("Failed to load user dictionary: {}", err))
-            })?;
+                Ok(PyUserDictionary {
+                    inner: user_dictionary,
+                })
+            }
+            None => Err(PyValueError::new_err(
+                "Dictionary type must be specified if CSV file specified",
+            )),
+        },
+        "bin" => match kind {
+            Some(_kind) => Err(PyValueError::new_err(
+                "Dictionary type must be None if Binaly file specified",
+            )),
+            None => {
+                let user_dictionary = load_user_dictionary_from_bin(p).map_err(|err| {
+                    PyValueError::new_err(format!("Failed to load user dictionary: {}", err))
+                })?;
 
-            Ok(PyUserDictionary {
-                inner: user_dictionary,
-            })
-        }
-        _ => Err(PyValueError::new_err("Invalid arguments")),
+                Ok(PyUserDictionary {
+                    inner: user_dictionary,
+                })
+            }
+        },
+        _ => Err(PyValueError::new_err(format!(
+            "Unsupported file: path:{}, kind:{:?}",
+            path, kind
+        ))),
     }
 }
