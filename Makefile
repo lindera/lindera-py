@@ -17,14 +17,14 @@ clean:
 
 format:
 	cargo fmt
-	poetry run isort ./docs ./examples ./tests
-	poetry run black ./docs ./examples ./tests
+	poetry run isort ./examples ./tests
+	poetry run black ./examples ./tests
 
 lint:
 	cargo clippy --all-features
-	poetry run isort --check-only --diff ./docs ./examples ./tests
-	poetry run black --check ./docs ./examples ./tests
-	poetry run flake8 ./docs ./examples ./tests
+	poetry run isort --check-only --diff ./examples ./tests
+	poetry run black --check ./examples ./tests
+	poetry run flake8 ./examples ./tests
 
 typecheck:
 	poetry run mypy ./examples ./tests
@@ -32,11 +32,14 @@ typecheck:
 .PHONY: tests
 test:
 	cargo test --all-features
-	maturin develop --release --all-features
+	poetry maturin develop --all-features
 	poetry run pytest -v ./tests
 
-build:
-	maturin build -i python --release --all-features
+maturin-develop:
+	poetry run maturin develop --all-features
+
+maturin-build:
+	poetry maturin build -i python --release --all-features
 
 tag:
 	git tag v$(VERSION)

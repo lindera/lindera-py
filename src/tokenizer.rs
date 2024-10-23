@@ -81,6 +81,7 @@ impl PyTokenizer {
         Ok(tokens
             .iter_mut()
             .map(|t| PyToken {
+                #[allow(clippy::suspicious_to_owned)]
                 text: t.text.to_owned().to_string(),
                 byte_start: t.byte_start,
                 byte_end: t.byte_end,
