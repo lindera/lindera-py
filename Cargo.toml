@@ -1,6 +1,6 @@
 [package]
 name = "lindera-py"
-version = "0.34.0"
+version = "0.34.1"
 edition = "2021"
 description = "Python binding for Lindera."
 documentation = "https://docs.rs/lindera-py"
