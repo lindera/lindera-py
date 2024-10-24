@@ -1,41 +1,47 @@
+use std::collections::HashMap;
+
+use pyo3::exceptions::PyTypeError;
 use pyo3::prelude::*;
-use pyo3::types::{PyDict, PyList};
-use serde_json::Value;
+use pyo3::types::{PyBool, PyDict, PyFloat, PyInt, PyList, PyNone, PyString};
+use serde_json::{json, Value};
 
-pub fn pydict_to_value(py_dict: &Bound<'_, PyDict>) -> PyResult<Value> {
-    let mut map = serde_json::Map::new();
-    for (key, value) in py_dict.iter() {
-        let key_str: String = key.extract()?; // Convert the key to a String
-        let value_json: Value = python_to_json(&value)?; // Convert the value to a JSON Value
-        map.insert(key_str, value_json);
-    }
-    Ok(Value::Object(map))
-}
-
-fn python_to_json(obj: &Bound<'_, PyAny>) -> PyResult<Value> {
-    if let Ok(py_dict) = obj.downcast::<PyDict>() {
-        pydict_to_value(py_dict)
-    } else if let Ok(py_list) = obj.downcast::<PyList>() {
-        let mut list = Vec::new();
-        for elem in py_list.iter() {
-            list.push(python_to_json(&elem)?);
-        }
-        Ok(Value::Array(list))
-    } else if let Ok(py_str) = obj.extract::<String>() {
-        Ok(Value::String(py_str))
-    } else if let Ok(py_int) = obj.extract::<i64>() {
-        Ok(Value::Number(serde_json::Number::from(py_int)))
-    } else if let Ok(py_float) = obj.extract::<f64>() {
-        Ok(Value::Number(
-            serde_json::Number::from_f64(py_float).unwrap(),
-        ))
-    } else if obj.is_none() {
+pub fn pyany_to_value(value: &Bound<'_, PyAny>) -> PyResult<Value> {
+    if value.is_instance_of::<PyString>() {
+        Ok(Value::from(value.extract::<String>()?))
+    } else if value.is_instance_of::<PyBool>() {
+        Ok(Value::from(value.extract::<bool>()?))
+    } else if value.is_instance_of::<PyFloat>() {
+        Ok(Value::from(value.extract::<f64>()?))
+    } else if value.is_instance_of::<PyInt>() {
+        Ok(Value::from(value.extract::<i64>()?))
+    } else if value.is_instance_of::<PyList>() {
+        pylist_to_value(&value.extract::<Bound<'_, PyList>>()?)
+    } else if value.is_instance_of::<PyDict>() {
+        pydict_to_value(&value.extract::<Bound<'_, PyDict>>()?)
+    } else if value.is_instance_of::<PyNone>() {
         Ok(Value::Null)
     } else {
-        Err(PyErr::new::<pyo3::exceptions::PyTypeError, _>(
-            "Unsupported Python object",
-        ))
+        Err(PyErr::new::<PyTypeError, _>(format!(
+            "Unsupported Python object: {:?}",
+            value
+        )))
     }
+}
+
+fn pylist_to_value(pylist: &Bound<'_, PyList>) -> PyResult<Value> {
+    let mut vec: Vec<Value> = Vec::new();
+    for value in pylist.into_iter() {
+        vec.push(pyany_to_value(&value)?);
+    }
+    Ok(vec.into())
+}
+
+pub fn pydict_to_value(pydict: &Bound<'_, PyDict>) -> PyResult<Value> {
+    let mut map: HashMap<String, Value> = HashMap::new();
+    for (key, value) in pydict.into_iter() {
+        map.insert(key.extract::<String>()?, pyany_to_value(&value)?);
+    }
+    Ok(json!(map))
 }
 
 #[cfg(test)]
