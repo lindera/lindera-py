@@ -28,7 +28,8 @@ impl PyTokenizer {
         dictionary: PyDictionary,
         user_dictionary: Option<PyUserDictionary>,
     ) -> PyResult<Self> {
-        let m = Mode::from_str(mode).map_err(|_err| PyValueError::new_err("Invalid mode"))?;
+        let m = Mode::from_str(mode)
+            .map_err(|err| PyValueError::new_err(format!("Failed to create mode: {}", err)))?;
         let u = user_dictionary.map(|d| d.inner);
         Ok(Self {
             inner: Tokenizer::new(m, dictionary.inner, u),
@@ -46,8 +47,9 @@ impl PyTokenizer {
             None => json!({}),
         };
 
-        let filter = CharacterFilterLoader::load_from_value(name, &character_filter_args)
-            .map_err(|_err| PyValueError::new_err("Invalid character filter"))?;
+        let filter = CharacterFilterLoader::load_from_value(name, &character_filter_args).map_err(
+            |err| PyValueError::new_err(format!("Failed to load character filter: {}", err)),
+        )?;
         self.inner.append_character_filter(filter);
 
         Ok(())
@@ -64,8 +66,10 @@ impl PyTokenizer {
             None => json!({}),
         };
 
-        let filter = TokenFilterLoader::load_from_value(name, &token_filter_args)
-            .map_err(|_err| PyValueError::new_err("Invalid token filter"))?;
+        let filter =
+            TokenFilterLoader::load_from_value(name, &token_filter_args).map_err(|err| {
+                PyValueError::new_err(format!("Failed to load token filter: {}", err))
+            })?;
         self.inner.append_token_filter(filter);
 
         Ok(())
@@ -76,7 +80,7 @@ impl PyTokenizer {
         let mut tokens = self
             .inner
             .tokenize(text)
-            .map_err(|_err| PyValueError::new_err("Invalid token filter"))?;
+            .map_err(|err| PyValueError::new_err(format!("Failed to tokenize text: {}", err)))?;
 
         Ok(tokens
             .iter_mut()
