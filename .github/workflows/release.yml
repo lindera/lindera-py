@@ -45,8 +45,6 @@ jobs:
           args: --release --out dist --find-interpreter --features=ipadic,ko-dic,cc-cedict
           sccache: 'true'
           manylinux: auto
-        # env:
-        #   CFLAGS_aarch64_unknown_linux_gnu: ${{ matrix.platform.target == 'aarch64' && '-march=armv8-a' || '' }}
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
