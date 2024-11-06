@@ -25,7 +25,7 @@ cc-cedict = ["lindera/cc-cedict"]  # Include CC-CEDICT dictionary (Chinese)
 compress = ["lindera/compress"]  # Compress dictionaries
 
 [dependencies]
-pyo3 = { version = "0.22.5", features = ["extension-module"] }
+pyo3 = { version = "0.22.6", features = ["extension-module"] }
 serde = { version = "1.0.213", features = ["derive"] }
 serde_json = "1.0.132"
 
