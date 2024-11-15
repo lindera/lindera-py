@@ -44,6 +44,37 @@ pub fn pydict_to_value(pydict: &Bound<'_, PyDict>) -> PyResult<Value> {
     Ok(json!(map))
 }
 
+pub fn value_to_pydict(py: Python, value: &Value) -> PyResult<PyObject> {
+    match value {
+        Value::Null => Ok(py.None()),
+        Value::Bool(b) => Ok(PyBool::new_bound(py, *b).into_py(py)),
+        Value::Number(num) => {
+            if let Some(i) = num.as_i64() {
+                Ok(i.into_py(py))
+            } else if let Some(f) = num.as_f64() {
+                Ok(f.into_py(py))
+            } else {
+                Err(PyTypeError::new_err("Unsupported number type"))
+            }
+        }
+        Value::String(s) => Ok(PyString::new_bound(py, s).into_py(py)),
+        Value::Array(arr) => {
+            let py_list = PyList::empty_bound(py);
+            for item in arr {
+                py_list.append(value_to_pydict(py, item)?)?;
+            }
+            Ok(py_list.into())
+        }
+        Value::Object(obj) => {
+            let py_dict = PyDict::new_bound(py);
+            for (key, val) in obj {
+                py_dict.set_item(key, value_to_pydict(py, val)?)?;
+            }
+            Ok(py_dict.into())
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     // use pyo3::types::IntoPyDict;

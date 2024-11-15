@@ -1,6 +1,6 @@
 [package]
 name = "lindera-py"
-version = "0.35.0"
+version = "0.38.0"
 edition = "2021"
 description = "Python binding for Lindera."
 documentation = "https://docs.rs/lindera-py"
@@ -25,8 +25,8 @@ cc-cedict = ["lindera/cc-cedict"]  # Include CC-CEDICT dictionary (Chinese)
 compress = ["lindera/compress"]  # Compress dictionaries
 
 [dependencies]
-pyo3 = { version = "0.22.5", features = ["extension-module"] }
-serde = { version = "1.0.213", features = ["derive"] }
+pyo3 = { version = "0.22.6", features = ["extension-module"] }
+serde = { version = "1.0.214", features = ["derive"] }
 serde_json = "1.0.132"
 
-lindera = "0.35.0"
+lindera = "0.38.0"
