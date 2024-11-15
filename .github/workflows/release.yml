@@ -34,10 +34,14 @@ jobs:
           - runner: ubuntu-latest
             target: ppc64le
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Run checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: 3.x
+
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
@@ -45,8 +49,7 @@ jobs:
           args: --release --out dist --find-interpreter --features=ipadic,ko-dic,cc-cedict
           sccache: 'true'
           manylinux: auto
-        # env:
-        #   CFLAGS_aarch64_unknown_linux_gnu: ${{ matrix.platform.target == 'aarch64' && '-march=armv8-a' || '' }}
+
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
@@ -67,10 +70,14 @@ jobs:
           - runner: ubuntu-latest
             target: armv7
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Run checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: 3.x
+
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
@@ -78,6 +85,7 @@ jobs:
           args: --release --out dist --find-interpreter --features=ipadic,ko-dic,cc-cedict
           sccache: 'true'
           manylinux: musllinux_1_2
+
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
@@ -94,17 +102,22 @@ jobs:
           - runner: windows-latest
             target: x86
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Run checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: 3.x
           architecture: ${{ matrix.platform.target }}
+
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
           args: --release --out dist --find-interpreter --features=ipadic,ko-dic,cc-cedict
           sccache: 'true'
+
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
@@ -121,16 +134,21 @@ jobs:
           - runner: macos-14
             target: aarch64
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Run checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: 3.x
+
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
           args: --release --out dist --find-interpreter --features=ipadic,ko-dic,cc-cedict
           sccache: 'true'
+
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
@@ -140,12 +158,15 @@ jobs:
   sdist:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Run checkout
+        uses: actions/checkout@v4
+
       - name: Build sdist
         uses: PyO3/maturin-action@v1
         with:
           command: sdist
           args: --out dist
+
       - name: Upload sdist
         uses: actions/upload-artifact@v4
         with:
@@ -165,11 +186,14 @@ jobs:
       # Used to generate artifact attestation
       attestations: write
     steps:
-      - uses: actions/download-artifact@v4
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v1
         with:
           subject-path: 'wheels-*/*'
+
       - name: Publish to PyPI
         if: startsWith(github.ref, 'refs/tags/')
         uses: PyO3/maturin-action@v1
@@ -178,3 +202,16 @@ jobs:
         with:
           command: upload
           args: --non-interactive --skip-existing wheels-*/*
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ./dist/*
+          name: Release ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
