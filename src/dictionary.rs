@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::path::Path;
 use std::str::FromStr;
 
 use pyo3::{exceptions::PyValueError, prelude::*};
@@ -33,8 +33,8 @@ pub fn load_dictionary(kind: Option<&str>, path: Option<&str>) -> PyResult<PyDic
             Ok(PyDictionary { inner: dictionary })
         }
         (None, Some(path_str)) => {
-            let p = PathBuf::from(path_str);
-            let dictionary = load_dictionary_from_path(p.as_path()).map_err(|err| {
+            let p = Path::new(path_str);
+            let dictionary = load_dictionary_from_path(p).map_err(|err| {
                 PyValueError::new_err(format!("Failed to load dictionary: {}", err))
             })?;
 
@@ -47,7 +47,7 @@ pub fn load_dictionary(kind: Option<&str>, path: Option<&str>) -> PyResult<PyDic
 #[pyfunction]
 #[pyo3(signature = (path, kind=None))]
 pub fn load_user_dictionary(path: &str, kind: Option<&str>) -> PyResult<PyUserDictionary> {
-    let p = PathBuf::from(path);
+    let p = Path::new(path);
     let ext = p
         .extension()
         .and_then(|ext| ext.to_str())

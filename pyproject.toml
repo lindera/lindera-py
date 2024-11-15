@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "lindera"
-version = "0.35.0"
+version = "0.38.0"
 description = ""
 authors = ["Minoru Osuka <minoru.osuka@gmail.com>"]
 license = "MIT"
@@ -10,7 +10,6 @@ readme = "README.md"
 python = "^3.12"
 maturin = "^1.7.1"
 patchelf = "^0.17.2.1"
-
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.3"
@@ -24,3 +23,17 @@ mypy = "^1.12.1"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 119
+
+[tool.flake8]
+ignore = "E203,E501"
+max-line-length = 119
+
+[tool.isort]
+profile = "black"
+line_length = 119
+
+[tool.mypy]
+ignore_missing_imports = true

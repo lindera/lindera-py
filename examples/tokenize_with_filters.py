@@ -1,17 +1,22 @@
-from lindera import load_dictionary  # type: ignore
-from lindera import Tokenizer
+from lindera import Segmenter, Tokenizer, load_dictionary
 
 
 def main():
+    # load the dictionary
     dictionary = load_dictionary("ipadic")
-    tokenizer = Tokenizer("normal", dictionary)
 
+    # create a segmenter
+    segmenter = Segmenter("normal", dictionary)
+
+    # create a tokenizer
+    tokenizer = Tokenizer(segmenter)
+
+    # append character filters
     tokenizer.append_character_filter("unicode_normalize", **{"kind": "nfkc"})
-    tokenizer.append_character_filter(
-        "japanese_iteration_mark", **{"normalize_kanji": True, "normalize_kana": True}
-    )
+    tokenizer.append_character_filter("japanese_iteration_mark", **{"normalize_kanji": True, "normalize_kana": True})
     tokenizer.append_character_filter("mapping", **{"mapping": {"リンデラ": "lindera"}})
 
+    # append token filters
     tokenizer.append_token_filter("japanese_katakana_stem", **{"min": 3})
     tokenizer.append_token_filter(
         "japanese_stop_tags",
