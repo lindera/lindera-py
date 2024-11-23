@@ -23,6 +23,7 @@ unidic = ["lindera/unidic"]  # Include UniDic dictionary (Japanese)
 ko-dic = ["lindera/ko-dic"]  # Include ko-dic dictionary (Korean)
 cc-cedict = ["lindera/cc-cedict"]  # Include CC-CEDICT dictionary (Chinese)
 compress = ["lindera/compress"]  # Compress dictionaries
+cjk = ["ipadic", "ko-dic", "cc-cedict", "compress"]  # Include CJK dictionary (Chinese, Japanese, Korean)
 
 [dependencies]
 pyo3 = { version = "0.23.1", features = ["extension-module"] }
