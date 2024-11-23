@@ -47,17 +47,17 @@ pub fn pydict_to_value(pydict: &Bound<'_, PyDict>) -> PyResult<Value> {
 pub fn value_to_pydict(py: Python, value: &Value) -> PyResult<PyObject> {
     match value {
         Value::Null => Ok(py.None()),
-        Value::Bool(b) => Ok(PyBool::new(py, *b).into_py(py)),
+        Value::Bool(b) => Ok(PyBool::new(py, *b).into_pyobject(py)?.to_owned().into()),
         Value::Number(num) => {
             if let Some(i) = num.as_i64() {
-                Ok(i.into_py(py))
+                Ok(i.into_pyobject(py)?.into())
             } else if let Some(f) = num.as_f64() {
-                Ok(f.into_py(py))
+                Ok(f.into_pyobject(py)?.into())
             } else {
                 Err(PyTypeError::new_err("Unsupported number type"))
             }
         }
-        Value::String(s) => Ok(PyString::new(py, s).into_py(py)),
+        Value::String(s) => Ok(PyString::new(py, s).into_pyobject(py)?.into()),
         Value::Array(arr) => {
             let py_list = PyList::empty(py);
             for item in arr {
