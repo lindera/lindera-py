@@ -146,7 +146,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist --find-interpreter --features=ipadic,ko-dic,cc-cedict
+          args: --release --out dist --find-interpreter --features=cjk
           sccache: 'true'
 
       - name: Upload wheels

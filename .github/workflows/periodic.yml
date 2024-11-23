@@ -19,7 +19,7 @@ jobs:
           - runner: windows-latest
             target: x86_64-pc-windows-msvc
         toolchain: [stable, beta, nightly]
-        features: ["ipadic", "ko-dic", "cc-cedict"]
+        features: [cjk]
     runs-on: ${{ matrix.platform.runner }}
     steps:
       - name: Run checkout
