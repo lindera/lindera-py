@@ -1,10 +1,10 @@
-from lindera import load_dictionary  # type: ignore
-from lindera import Tokenizer
+from lindera import Segmenter, Tokenizer, load_dictionary
 
 
 def test_tokenize_with_ipadic():
     dictionary = load_dictionary("ipadic")
-    tokenizer = Tokenizer("normal", dictionary)
+    segmenter = Segmenter("normal", dictionary)
+    tokenizer = Tokenizer(segmenter)
 
     text = "すもももももももものうち"
     print(text)

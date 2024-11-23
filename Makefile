@@ -21,7 +21,7 @@ format:
 	poetry run black ./examples ./tests
 
 lint:
-	cargo clippy --all-features
+	cargo clippy --features=cjk
 	poetry run isort --check-only --diff ./examples ./tests
 	poetry run black --check ./examples ./tests
 	poetry run flake8 ./examples ./tests
@@ -29,17 +29,17 @@ lint:
 typecheck:
 	poetry run mypy ./examples ./tests
 
-.PHONY: tests
-test:
-	cargo test --all-features
-	poetry maturin develop --all-features
-	poetry run pytest -v ./tests
-
 maturin-develop:
-	poetry run maturin develop --all-features
+	poetry run maturin develop --features=cjk
 
 maturin-build:
-	poetry maturin build -i python --release --all-features
+	poetry maturin build -i python --release --features=cjk
+
+.PHONY: tests
+test:
+	cargo test --features=cjk
+	poetry run maturin develop --features=cjk
+	poetry run pytest -v ./tests
 
 tag:
 	git tag v$(VERSION)
