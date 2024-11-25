@@ -35,7 +35,7 @@ Python binding for [Lindera](https://github.com/lindera-morphology/lindera), a J
 (.venv) % make init
 ```
 
-## nstall lindera-py as a library in the virtual environment
+## Install lindera-py as a library in the virtual environment
 
 This command takes a long time because it builds a library that includes all the dictionaries.
 
