@@ -1,6 +1,7 @@
 .DEFAULT_GOAL := build
 
 VERSION := $(shell poetry version -s)
+LINDERA_PY_VERSION ?= $(shell cargo metadata --no-deps --format-version=1 | jq -r '.packages[] | select(.name=="lindera-py") | .version')
 
 init:
 	poetry self add poetry-plugin-export
@@ -40,6 +41,11 @@ test:
 	cargo test --features=cjk
 	poetry run maturin develop --features=cjk
 	poetry run pytest -v ./tests
+
+publish:
+ifeq ($(shell curl -s -XGET https://crates.io/api/v1/crates/lindera-py | jq -r '.versions[].num' | grep $(LINDERA_PY_VERSION)),)
+	(cargo package && cargo publish)
+endif
 
 tag:
 	git tag v$(VERSION)
