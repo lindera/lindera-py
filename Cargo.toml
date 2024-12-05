@@ -26,6 +26,8 @@ compress = ["lindera/compress"]  # Compress dictionaries
 cjk = ["ipadic", "ko-dic", "cc-cedict", "compress"]  # Include CJK dictionary (Chinese, Japanese, Korean)
 
 [dependencies]
+[target.'cfg(target_os = "linux")'.dependencies]
+openssl = { version = "*", features = ["vendored"] }
 pyo3 = { version = "0.23.3", features = ["extension-module"] }
 serde = { version = "1.0.214", features = ["derive"] }
 serde_json = "1.0.133"
