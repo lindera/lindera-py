@@ -25,47 +25,6 @@ jobs:
             target: x86_64
           - runner: ubuntu-22.04
             target: x86
-          # - runner: ubuntu-22.04
-          #   target: aarch64
-          # - runner: ubuntu-22.04
-          #   target: armv7
-          # - runner: ubuntu-22.04
-          #   target: s390x
-          # - runner: ubuntu-22.04
-          #   target: ppc64le
-    steps:
-      - name: Run checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.x
-
-      - name: Build wheels
-        uses: PyO3/maturin-action@v1
-        with:
-          target: ${{ matrix.platform.target }}
-          args: --release --out dist --find-interpreter --features=cjk
-          sccache: 'true'
-          manylinux: auto
-          before-script-linux: "yum install openssl-devel devtoolset-10-libatomic-devel perl-IPC-Cmd -y"
-
-      - name: Upload wheels
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheels-linux-${{ matrix.platform.target }}
-          path: dist
-
-  linux2:
-    runs-on: ${{ matrix.platform.runner }}
-    strategy:
-      matrix:
-        platform:
-          # - runner: ubuntu-22.04
-          #   target: x86_64
-          # - runner: ubuntu-22.04
-          #   target: x86
           - runner: ubuntu-22.04
             target: aarch64
           - runner: ubuntu-22.04
@@ -91,12 +50,54 @@ jobs:
           sccache: 'true'
           manylinux: auto
           before-script-linux: "apt-get update && apt-get install libssl-dev pkg-config -y"
+          # before-script-linux: "yum install openssl-devel devtoolset-10-libatomic-devel perl-IPC-Cmd -y"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
           name: wheels-linux-${{ matrix.platform.target }}
           path: dist
+
+  # linux2:
+  #   runs-on: ${{ matrix.platform.runner }}
+  #   strategy:
+  #     matrix:
+  #       platform:
+  #         # - runner: ubuntu-22.04
+  #         #   target: x86_64
+  #         # - runner: ubuntu-22.04
+  #         #   target: x86
+  #         - runner: ubuntu-22.04
+  #           target: aarch64
+  #         - runner: ubuntu-22.04
+  #           target: armv7
+  #         # - runner: ubuntu-22.04
+  #         #   target: s390x
+  #         # - runner: ubuntu-22.04
+  #         #   target: ppc64le
+  #   steps:
+  #     - name: Run checkout
+  #       uses: actions/checkout@v4
+
+  #     - name: Setup Python
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: 3.x
+
+  #     - name: Build wheels
+  #       uses: PyO3/maturin-action@v1
+  #       with:
+  #         target: ${{ matrix.platform.target }}
+  #         args: --release --out dist --find-interpreter --features=cjk
+  #         sccache: 'true'
+  #         manylinux: auto
+  #         before-script-linux: "apt-get update && apt-get install libssl-dev pkg-config -y"
+
+  #     - name: Upload wheels
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: wheels-linux-${{ matrix.platform.target }}
+  #         path: dist
 
   musllinux:
     runs-on: ${{ matrix.platform.runner }}
@@ -107,43 +108,6 @@ jobs:
             target: x86_64
           - runner: ubuntu-22.04
             target: x86
-          # - runner: ubuntu-22.04
-          #   target: aarch64
-          # - runner: ubuntu-22.04
-          #   target: armv7
-    steps:
-      - name: Run checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.x
-
-      - name: Build wheels
-        uses: PyO3/maturin-action@v1
-        with:
-          target: ${{ matrix.platform.target }}
-          args: --release --out dist --find-interpreter --features=cjk
-          sccache: 'true'
-          manylinux: musllinux_1_2
-          before-script-linux: "apt-get update && apt-get install libssl-dev pkg-config -y"
-
-      - name: Upload wheels
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheels-musllinux-${{ matrix.platform.target }}
-          path: dist
-
-  musllinux2:
-    runs-on: ${{ matrix.platform.runner }}
-    strategy:
-      matrix:
-        platform:
-          # - runner: ubuntu-22.04
-          #   target: x86_64
-          # - runner: ubuntu-22.04
-          #   target: x86
           - runner: ubuntu-22.04
             target: aarch64
           - runner: ubuntu-22.04
@@ -171,6 +135,43 @@ jobs:
         with:
           name: wheels-musllinux-${{ matrix.platform.target }}
           path: dist
+
+  # musllinux2:
+  #   runs-on: ${{ matrix.platform.runner }}
+  #   strategy:
+  #     matrix:
+  #       platform:
+  #         # - runner: ubuntu-22.04
+  #         #   target: x86_64
+  #         # - runner: ubuntu-22.04
+  #         #   target: x86
+  #         - runner: ubuntu-22.04
+  #           target: aarch64
+  #         - runner: ubuntu-22.04
+  #           target: armv7
+  #   steps:
+  #     - name: Run checkout
+  #       uses: actions/checkout@v4
+
+  #     - name: Setup Python
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: 3.x
+
+  #     - name: Build wheels
+  #       uses: PyO3/maturin-action@v1
+  #       with:
+  #         target: ${{ matrix.platform.target }}
+  #         args: --release --out dist --find-interpreter --features=cjk
+  #         sccache: 'true'
+  #         manylinux: musllinux_1_2
+  #         before-script-linux: "apt-get update && apt-get install libssl-dev pkg-config -y"
+
+  #     - name: Upload wheels
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: wheels-musllinux-${{ matrix.platform.target }}
+  #         path: dist
 
   windows:
     runs-on: ${{ matrix.platform.runner }}
