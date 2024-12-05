@@ -34,7 +34,7 @@ maturin-develop:
 	poetry run maturin develop --features=cjk
 
 maturin-build:
-	poetry maturin build -i python --release --features=cjk
+	poetry run maturin build -i python --release --features=cjk
 
 .PHONY: tests
 test:
