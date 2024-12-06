@@ -916,7 +916,7 @@ dependencies = [
 
 [[package]]
 name = "lindera-py"
-version = "0.38.3"
+version = "0.38.4"
 dependencies = [
  "lindera",
  "openssl",
