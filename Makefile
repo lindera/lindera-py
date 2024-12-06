@@ -30,10 +30,10 @@ lint:
 typecheck:
 	poetry run mypy ./examples ./tests
 
-maturin-develop:
+develop:
 	poetry run maturin develop --features=cjk
 
-maturin-build:
+build:
 	poetry run maturin build -i python --release --features=cjk
 
 .PHONY: tests
