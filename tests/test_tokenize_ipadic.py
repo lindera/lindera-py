@@ -1,4 +1,4 @@
-from lindera import Segmenter, Tokenizer, load_dictionary
+from lindera_py import Segmenter, Tokenizer, load_dictionary
 
 
 def test_tokenize_with_ipadic():

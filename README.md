@@ -46,7 +46,7 @@ This command takes a long time because it builds a library that includes all the
 ## Example code
 
 ```python
-from lindera import Segmenter, Tokenizer, load_dictionary
+from lindera_py import Segmenter, Tokenizer, load_dictionary
 
 
 def main():

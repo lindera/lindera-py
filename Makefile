@@ -26,8 +26,6 @@ lint:
 	poetry run isort --check-only --diff ./examples ./tests
 	poetry run black --check ./examples ./tests
 	poetry run flake8 ./examples ./tests
-
-typecheck:
 	poetry run mypy ./examples ./tests
 
 develop:
