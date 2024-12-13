@@ -31,6 +31,7 @@ jobs:
 
   check:
     name: Check
+    needs: [fmt]
     strategy:
       matrix:
         platform:
@@ -53,6 +54,8 @@ jobs:
         run: cargo check --features "${{ matrix.features }}"
 
   test:
+    name: Test
+    needs: [check]
     strategy:
       matrix:
         platform:
