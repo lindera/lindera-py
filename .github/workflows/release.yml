@@ -16,7 +16,87 @@ permissions:
   contents: read
 
 jobs:
+  fmt:
+    name: Format
+    strategy:
+      matrix:
+        platform:
+          - runner: ubuntu-latest
+            target: x86_64
+        toolchain: [stable]
+        features: [cjk]
+    runs-on: ${{ matrix.platform.runner }}
+    steps:
+      - name: Run checkout
+        uses: actions/checkout@v4
+
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: ${{ matrix.toolchain }}
+          components: rustfmt, clippy
+
+      - name: Check format
+        run: cargo fmt --all -- --check
+
+  check:
+    name: Check
+    needs: [fmt]
+    strategy:
+      matrix:
+        platform:
+          - runner: ubuntu-latest
+            target: x86_64
+        toolchain: [stable]
+        features: [cjk]
+    runs-on: ${{ matrix.platform.runner }}
+    steps:
+      - name: Run checkout
+        uses: actions/checkout@v4
+
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: ${{ matrix.toolchain }}
+          components: rustfmt, clippy
+
+      - name: Run check
+        run: cargo check --features "${{ matrix.features }}"
+
+  test:
+    name: Test
+    needs: [check]
+    strategy:
+      matrix:
+        platform:
+          - runner: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - runner: macOS-latest
+            target: x86_64-apple-darwin
+          - runner: macOS-latest
+            target: aarch64-apple-darwin
+          - runner: windows-latest
+            target: x86_64-pc-windows-msvc
+        toolchain: [stable]
+        features: [cjk]
+    runs-on: ${{ matrix.platform.runner }}
+    steps:
+      - name: Run checkout
+        uses: actions/checkout@v4
+
+      - name: Install toolchain
+        uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: ${{ matrix.toolchain }}
+          target: ${{ matrix.platform.target }}
+          components: rustfmt, clippy
+
+      - name: Run test
+        run: cargo test --target "${{ matrix.platform.target }}" --features "${{ matrix.features }}"
+
   linux:
+    name: Linux
+    needs: [test]
     runs-on: ${{ matrix.platform.runner }}
     strategy:
       matrix:
@@ -25,14 +105,6 @@ jobs:
             target: x86_64
           - runner: ubuntu-22.04
             target: x86
-          # - runner: ubuntu-22.04
-          #   target: aarch64
-          # - runner: ubuntu-22.04
-          #   target: armv7
-          # - runner: ubuntu-22.04
-          #   target: s390x
-          # - runner: ubuntu-22.04
-          #   target: ppc64le
     steps:
       - name: Run checkout
         uses: actions/checkout@v4
@@ -49,7 +121,6 @@ jobs:
           args: --release --out dist --find-interpreter --features=cjk
           sccache: 'true'
           manylinux: auto
-          # before-script-linux: "apt-get update && apt-get install libssl-dev pkg-config -y"
           before-script-linux: "yum install openssl-devel devtoolset-10-libatomic-devel perl-IPC-Cmd -y"
 
       - name: Upload wheels
@@ -59,22 +130,16 @@ jobs:
           path: dist
 
   linux2:
+    name: Linux2
+    needs: [test]
     runs-on: ${{ matrix.platform.runner }}
     strategy:
       matrix:
         platform:
-          # - runner: ubuntu-22.04
-          #   target: x86_64
-          # - runner: ubuntu-22.04
-          #   target: x86
           - runner: ubuntu-22.04
             target: aarch64
           - runner: ubuntu-22.04
             target: armv7
-          # - runner: ubuntu-22.04
-          #   target: s390x
-          # - runner: ubuntu-22.04
-          #   target: ppc64le
     steps:
       - name: Run checkout
         uses: actions/checkout@v4
@@ -100,6 +165,8 @@ jobs:
           path: dist
 
   musllinux:
+    name: MuslLinux
+    needs: [test]
     runs-on: ${{ matrix.platform.runner }}
     strategy:
       matrix:
@@ -136,44 +203,9 @@ jobs:
           name: wheels-musllinux-${{ matrix.platform.target }}
           path: dist
 
-  # musllinux2:
-  #   runs-on: ${{ matrix.platform.runner }}
-  #   strategy:
-  #     matrix:
-  #       platform:
-  #         # - runner: ubuntu-22.04
-  #         #   target: x86_64
-  #         # - runner: ubuntu-22.04
-  #         #   target: x86
-  #         - runner: ubuntu-22.04
-  #           target: aarch64
-  #         - runner: ubuntu-22.04
-  #           target: armv7
-  #   steps:
-  #     - name: Run checkout
-  #       uses: actions/checkout@v4
-
-  #     - name: Setup Python
-  #       uses: actions/setup-python@v5
-  #       with:
-  #         python-version: 3.x
-
-  #     - name: Build wheels
-  #       uses: PyO3/maturin-action@v1
-  #       with:
-  #         target: ${{ matrix.platform.target }}
-  #         args: --release --out dist --find-interpreter --features=cjk
-  #         sccache: 'true'
-  #         manylinux: musllinux_1_2
-  #         before-script-linux: "apt-get update && apt-get install libssl-dev pkg-config -y"
-
-  #     - name: Upload wheels
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: wheels-musllinux-${{ matrix.platform.target }}
-  #         path: dist
-
   windows:
+    name: Windows
+    needs: [test]
     runs-on: ${{ matrix.platform.runner }}
     strategy:
       matrix:
@@ -206,6 +238,8 @@ jobs:
           path: dist
 
   macos:
+    name: MacOS
+    needs: [test]
     runs-on: ${{ matrix.platform.runner }}
     strategy:
       matrix:
@@ -256,9 +290,9 @@ jobs:
 
   release:
     name: Release
+    needs: [linux, linux2, musllinux, windows, macos, sdist]
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch' }}
-    needs: [linux, musllinux, windows, macos, sdist]
     permissions:
       # Use to sign the release artifacts
       id-token: write
@@ -299,11 +333,11 @@ jobs:
 
   publish-crates:
     name: Publish crate
+    needs: [release]
     strategy:
       matrix:
         os: [ubuntu-latest]
         toolchain: [stable]
-    needs: [release]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
