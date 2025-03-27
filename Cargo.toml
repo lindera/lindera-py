@@ -1,6 +1,6 @@
 [package]
 name = "lindera-py"
-version = "0.40.0"
+version = "0.40.1"
 edition = "2021"
 description = "Python binding for Lindera."
 documentation = "https://docs.rs/lindera-py"
@@ -31,7 +31,7 @@ pyo3 = { version = "0.24.0", features = ["extension-module"] }
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.134"
 
-lindera = "0.40.0"
+lindera = "0.40.1"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 openssl = { version = "0.10.71", features = ["vendored"] }
