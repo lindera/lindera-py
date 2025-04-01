@@ -119,7 +119,7 @@ jobs:
         with:
           target: ${{ matrix.platform.target }}
           args: --release --out dist --find-interpreter --features=cjk
-          sccache: 'true'
+          sccache: 'false'
           manylinux: auto
           before-script-linux: "yum install openssl-devel devtoolset-10-libatomic-devel perl-IPC-Cmd -y"
 
@@ -154,7 +154,7 @@ jobs:
         with:
           target: ${{ matrix.platform.target }}
           args: --release --out dist --find-interpreter --features=cjk
-          sccache: 'true'
+          sccache: 'false'
           manylinux: auto
           before-script-linux: "apt-get update && apt-get install libssl-dev pkg-config -y"
 
@@ -193,7 +193,7 @@ jobs:
         with:
           target: ${{ matrix.platform.target }}
           args: --release --out dist --find-interpreter --features=cjk
-          sccache: 'true'
+          sccache: 'false'
           manylinux: musllinux_1_2
           before-script-linux: "apt-get update && apt-get install libssl-dev pkg-config -y"
 
@@ -229,7 +229,7 @@ jobs:
         with:
           target: ${{ matrix.platform.target }}
           args: --release --out dist --find-interpreter --features=cjk
-          sccache: 'true'
+          sccache: 'false'
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -262,7 +262,7 @@ jobs:
         with:
           target: ${{ matrix.platform.target }}
           args: --release --out dist --find-interpreter --features=cjk
-          sccache: 'true'
+          sccache: 'false'
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
