@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "lindera_py"
-version = "0.40.2"
+version = "0.41.0"
 description = ""
 authors = ["Minoru Osuka <minoru.osuka@gmail.com>"]
 license = "MIT"
