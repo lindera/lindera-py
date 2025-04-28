@@ -28,9 +28,9 @@ dependencies = [
 
 [[package]]
 name = "anyhow"
-version = "1.0.97"
+version = "1.0.98"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dcfed56ad506cb2c684a14971b8861fdc3baaaae314b9e5f9bb532cbe3ba7a4f"
+checksum = "e16d2d3311acee920a9eb8d33b8cbc1787ce4a264e85f964c2404b969bdcd487"
 
 [[package]]
 name = "atomic-waker"
@@ -821,9 +821,9 @@ checksum = "c19937216e9d3aa9956d9bb8dfc0b0c8beb6058fc4f7a4dc4d850edf86a237d6"
 
 [[package]]
 name = "lindera"
-version = "0.41.0"
+version = "0.42.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "24f98006a567037c7cae3b8d1325d0a3883c0c995534ba730ace938a5d02dddd"
+checksum = "2a213a3842e7cf4210c9f1b80c922089a96b30620f953258b53cac4f1bb3985e"
 dependencies = [
  "anyhow",
  "bincode",
@@ -851,9 +851,9 @@ dependencies = [
 
 [[package]]
 name = "lindera-cc-cedict"
-version = "0.41.0"
+version = "0.42.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c73a4b0b2918c41e078c715a439b2aaa7e7da183b4cf7b8eec91d85c6aceef89"
+checksum = "8f0d5e6b80f20de4b1c1e2ae8e19e6301617acb4c1791605ec7bcf80642256de"
 dependencies = [
  "bincode",
  "byteorder",
@@ -864,9 +864,9 @@ dependencies = [
 
 [[package]]
 name = "lindera-dictionary"
-version = "0.41.0"
+version = "0.42.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "33d7dd9c327fbec5b4da5083fbd8182e11fb380d8264e25b239258bcb04b840f"
+checksum = "8d961a703984ba24278488c81405446efad804a3e3b63a4e1614ba7013b8d904"
 dependencies = [
  "anyhow",
  "bincode",
@@ -879,6 +879,7 @@ dependencies = [
  "flate2",
  "glob",
  "log",
+ "md5",
  "once_cell",
  "rand",
  "reqwest",
@@ -891,9 +892,9 @@ dependencies = [
 
 [[package]]
 name = "lindera-ipadic"
-version = "0.41.0"
+version = "0.42.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b352edd29e478536334991e5812dc5bf84a4f244a94588df1cee9b1cc6e6184d"
+checksum = "264b00eb92dd145f73a5a11fbec26e3128f33ad461e292857ae9a630427eea64"
 dependencies = [
  "bincode",
  "byteorder",
@@ -904,9 +905,9 @@ dependencies = [
 
 [[package]]
 name = "lindera-ipadic-neologd"
-version = "0.41.0"
+version = "0.42.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f1efd4c852b0264e43dfba6a3af16b0bc079c9389db179b0a8c0636966149377"
+checksum = "e770d89d5f42e4c312b734d2bf483ad72c678ce29913fc08588ee904ef263bea"
 dependencies = [
  "bincode",
  "byteorder",
@@ -917,9 +918,9 @@ dependencies = [
 
 [[package]]
 name = "lindera-ko-dic"
-version = "0.41.0"
+version = "0.42.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5afd8b98df817629221d1ba0f44c3a7e89a8f6449fb28f5436d4b9ac84c21f89"
+checksum = "8e5c6b717e33d250491e4a512ae79fda233d99c971f279d6a18c94f5ed3e9982"
 dependencies = [
  "bincode",
  "byteorder",
@@ -941,9 +942,9 @@ dependencies = [
 
 [[package]]
 name = "lindera-unidic"
-version = "0.41.0"
+version = "0.42.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bbb0185040f7dc1e4cb41cc5ac74d65d08ae70a111c2301abb5b08ab7d14b38d"
+checksum = "3519856eab9fcf072d1a8b04d4b332cea16d70d903dd2d8aad63f317704d35dc"
 dependencies = [
  "bincode",
  "byteorder",
@@ -969,6 +970,12 @@ name = "log"
 version = "0.4.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "13dc2df351e3202783a1fe0d44375f7295ffb4049267b0f3018346dc122a1d94"
+
+[[package]]
+name = "md5"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "490cc448043f947bae3cbee9c203358d62dbee0db12107a74be5c30ccfd09771"
 
 [[package]]
 name = "memchr"
@@ -1226,13 +1233,12 @@ checksum = "74765f6d916ee2faa39bc8e68e4f3ed8949b48cccdac59983d287a7cb71ce9c5"
 
 [[package]]
 name = "rand"
-version = "0.9.0"
+version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3779b94aeb87e8bd4e834cee3650289ee9e0d5677f976ecdb6d219e5f4f6cd94"
+checksum = "9fbfd9d094a40bf3ae768db9361049ace4c0e04a4fd6b359518bd7b73a73dd97"
 dependencies = [
  "rand_chacha",
  "rand_core",
- "zerocopy",
 ]
 
 [[package]]
