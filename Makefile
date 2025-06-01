@@ -3,9 +3,6 @@
 VERSION := $(shell poetry version -s)
 LINDERA_PY_VERSION ?= $(shell cargo metadata --no-deps --format-version=1 | jq -r '.packages[] | select(.name=="lindera-py") | .version')
 
-default: ## Show Makefile list
-	@echo $(MAKEFILE_LIST)
-
 init: ## Initialize the project
 	poetry self add poetry-plugin-export
 	poetry config warnings.export false
