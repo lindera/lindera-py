@@ -883,7 +883,7 @@ dependencies = [
 
 [[package]]
 name = "lindera-py"
-version = "0.43.1"
+version = "0.43.2"
 dependencies = [
  "lindera",
  "pyo3",
