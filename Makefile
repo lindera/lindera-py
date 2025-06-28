@@ -3,9 +3,12 @@
 VERSION := $(shell poetry version -s)
 LINDERA_PY_VERSION ?= $(shell cargo metadata --no-deps --format-version=1 | jq -r '.packages[] | select(.name=="lindera-py") | .version')
 
+USER_AGENT ?= $(shell curl --version | head -n1 | awk '{print $1"/"$2}')
+USER ?= $(shell whoami)
+HOSTNAME ?= $(shell hostname)
+
 init: ## Initialize the project
 	poetry self add poetry-plugin-export
-	poetry config warnings.export false
 	poetry config virtualenvs.in-project true
 	poetry install --no-root
 
@@ -41,7 +44,7 @@ test: ## Test the project
 	poetry run pytest -v ./tests
 
 publish: ## Publish package to crates.io
-ifeq ($(shell curl -s -XGET https://crates.io/api/v1/crates/lindera-py | jq -r '.versions[].num' | grep $(LINDERA_PY_VERSION)),)
+ifeq ($(shell curl -s -XGET -H "User-Agent: $(USER_AGENT) ($(USER)@$(HOSTNAME))" https://crates.io/api/v1/crates/lindera-py | jq -r '.versions[].num' | grep $(LINDERA_PY_VERSION)),)
 	(cargo package && cargo publish)
 endif
 

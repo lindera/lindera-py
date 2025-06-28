@@ -773,9 +773,9 @@ checksum = "c19937216e9d3aa9956d9bb8dfc0b0c8beb6058fc4f7a4dc4d850edf86a237d6"
 
 [[package]]
 name = "lindera"
-version = "0.43.2"
+version = "0.44.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1aaaeb2a6cbdbd9a14054ebe0be5db5736739e34b6630a7d8f6cd70990761349"
+checksum = "c4571a7ee1ab7ff328076815a93fa39f24c7f4b0283aa4873a1b4e946831a9f9"
 dependencies = [
  "anyhow",
  "bincode",
@@ -803,9 +803,9 @@ dependencies = [
 
 [[package]]
 name = "lindera-cc-cedict"
-version = "0.43.2"
+version = "0.44.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6ffac08a8e3ee968fd32b3e44d93b24b1dbfc3324c0262a1e31b7a7f71f70dff"
+checksum = "b985ab2e6625b868faa698b758f60369eca7d3c0581dce17ce67026ab78e1361"
 dependencies = [
  "bincode",
  "byteorder",
@@ -816,9 +816,9 @@ dependencies = [
 
 [[package]]
 name = "lindera-dictionary"
-version = "0.43.2"
+version = "0.44.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "956acc2e4e31b4e4709d3147efe7f808bb1f910a4313061b69c1970d47a62194"
+checksum = "8bc18e1c58de0e5fe50ddf18f61ffb5a79e0f335d8c0be58c300985587e1be55"
 dependencies = [
  "anyhow",
  "bincode",
@@ -832,6 +832,7 @@ dependencies = [
  "glob",
  "log",
  "md5",
+ "memmap2",
  "once_cell",
  "rand",
  "reqwest",
@@ -844,9 +845,9 @@ dependencies = [
 
 [[package]]
 name = "lindera-ipadic"
-version = "0.43.2"
+version = "0.44.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9176ec4ddbdde891306be0b20db7ecd96629a830b5bc5906bb88aaf773ccb41c"
+checksum = "c715aae5daf41c83fbf481cd6936bd11fb864e85a46c19342425ec0f755ad457"
 dependencies = [
  "bincode",
  "byteorder",
@@ -857,9 +858,9 @@ dependencies = [
 
 [[package]]
 name = "lindera-ipadic-neologd"
-version = "0.43.2"
+version = "0.44.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fb2111e72fb282e60a50f1ee59a09a117215ad669f56a367c34709fd0c5eaddd"
+checksum = "dc2731a2da34989fb9d5e5ba30c3ac50d0edf250ec123e276f880c7f1c331162"
 dependencies = [
  "bincode",
  "byteorder",
@@ -870,9 +871,9 @@ dependencies = [
 
 [[package]]
 name = "lindera-ko-dic"
-version = "0.43.2"
+version = "0.44.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d5f586d640d17947b458e66489c8580385243b80ca063aeebbb02af7f2b7b974"
+checksum = "30cc2ea7864f42f18353c79375032bc62b099f51be01515a627c2fc2b1321b3d"
 dependencies = [
  "bincode",
  "byteorder",
@@ -883,7 +884,7 @@ dependencies = [
 
 [[package]]
 name = "lindera-py"
-version = "0.43.2"
+version = "0.44.0"
 dependencies = [
  "lindera",
  "pyo3",
@@ -893,9 +894,9 @@ dependencies = [
 
 [[package]]
 name = "lindera-unidic"
-version = "0.43.2"
+version = "0.44.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5cc2fe420fc52b1ca675fc4893bbeb32f2591a293cfb26687d97e330391e5935"
+checksum = "d1d97a1ae1f27b98a5f15fd3a2fd1103e0e7f328891f63c223c530e4702075e6"
 dependencies = [
  "bincode",
  "byteorder",
@@ -930,15 +931,24 @@ checksum = "112b39cec0b298b6c1999fee3e31427f74f676e4cb9879ed1a121b43661a4154"
 
 [[package]]
 name = "md5"
-version = "0.7.0"
+version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "490cc448043f947bae3cbee9c203358d62dbee0db12107a74be5c30ccfd09771"
+checksum = "ae960838283323069879657ca3de837e9f7bbb4c7bf6ea7f1b290d5e9476d2e0"
 
 [[package]]
 name = "memchr"
 version = "2.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
+
+[[package]]
+name = "memmap2"
+version = "0.9.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fd3f7eed9d3848f8b98834af67102b720745c4ec028fcd0aa0239277e7de374f"
+dependencies = [
+ "libc",
+]
 
 [[package]]
 name = "memoffset"
@@ -1029,9 +1039,9 @@ dependencies = [
 
 [[package]]
 name = "pyo3"
-version = "0.25.0"
+version = "0.25.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f239d656363bcee73afef85277f1b281e8ac6212a1d42aa90e55b90ed43c47a4"
+checksum = "8970a78afe0628a3e3430376fc5fd76b6b45c4d43360ffd6cdd40bdde72b682a"
 dependencies = [
  "indoc",
  "libc",
@@ -1046,9 +1056,9 @@ dependencies = [
 
 [[package]]
 name = "pyo3-build-config"
-version = "0.25.0"
+version = "0.25.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "755ea671a1c34044fa165247aaf6f419ca39caa6003aee791a0df2713d8f1b6d"
+checksum = "458eb0c55e7ece017adeba38f2248ff3ac615e53660d7c71a238d7d2a01c7598"
 dependencies = [
  "once_cell",
  "target-lexicon",
@@ -1056,9 +1066,9 @@ dependencies = [
 
 [[package]]
 name = "pyo3-ffi"
-version = "0.25.0"
+version = "0.25.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fc95a2e67091e44791d4ea300ff744be5293f394f1bafd9f78c080814d35956e"
+checksum = "7114fe5457c61b276ab77c5055f206295b812608083644a5c5b2640c3102565c"
 dependencies = [
  "libc",
  "pyo3-build-config",
@@ -1066,9 +1076,9 @@ dependencies = [
 
 [[package]]
 name = "pyo3-macros"
-version = "0.25.0"
+version = "0.25.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a179641d1b93920829a62f15e87c0ed791b6c8db2271ba0fd7c2686090510214"
+checksum = "a8725c0a622b374d6cb051d11a0983786448f7785336139c3c94f5aa6bef7e50"
 dependencies = [
  "proc-macro2",
  "pyo3-macros-backend",
@@ -1078,9 +1088,9 @@ dependencies = [
 
 [[package]]
 name = "pyo3-macros-backend"
-version = "0.25.0"
+version = "0.25.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9dff85ebcaab8c441b0e3f7ae40a6963ecea8a9f5e74f647e33fcf5ec9a1e89e"
+checksum = "4109984c22491085343c05b0dbc54ddc405c3cf7b4374fc533f5c3313a572ccc"
 dependencies = [
  "heck",
  "proc-macro2",

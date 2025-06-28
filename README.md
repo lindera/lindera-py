@@ -12,7 +12,7 @@ Python binding for [Lindera](https://github.com/lindera/lindera), a Japanese mor
 
 ```shell
 # Install Python
-% pyenv install 3.12.3
+% pyenv install 3.13.5
 ```
 
 ## Setup repository and activate virtual environment
