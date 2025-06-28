@@ -149,49 +149,49 @@ jobs:
           name: wheels-${{ matrix.features.package_name }}-linux-${{ matrix.platform.target }}-${{ github.ref_name }}
           path: dist
 
-  musllinux:
-    name: MuslLinux
-    needs: [test]
-    strategy:
-      matrix:
-        platform:
-          - runner: ubuntu-latest
-            target: x86_64
-          # - runner: ubuntu-latest
-          #   target: x86
-          - runner: ubuntu-latest
-            target: aarch64
-          # - runner: ubuntu-latest
-          #   target: armv7
-        toolchain: [stable]
-        features:
-          - value: "cjk"
-            package_name: "lindera"
-            package_description: "Lindera (no dictionary)"
-    runs-on: ${{ matrix.platform.runner }}
-    steps:
-      - name: Run checkout
-        uses: actions/checkout@v4
+  # musllinux:
+  #   name: MuslLinux
+  #   needs: [test]
+  #   strategy:
+  #     matrix:
+  #       platform:
+  #         - runner: ubuntu-latest
+  #           target: x86_64
+  #         # - runner: ubuntu-latest
+  #         #   target: x86
+  #         - runner: ubuntu-latest
+  #           target: aarch64
+  #         # - runner: ubuntu-latest
+  #         #   target: armv7
+  #       toolchain: [stable]
+  #       features:
+  #         - value: "cjk"
+  #           package_name: "lindera"
+  #           package_description: "Lindera (no dictionary)"
+  #   runs-on: ${{ matrix.platform.runner }}
+  #   steps:
+  #     - name: Run checkout
+  #       uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.x
+  #     - name: Setup Python
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: 3.x
 
-      - name: Build wheels
-        uses: PyO3/maturin-action@v1
-        with:
-          target: ${{ matrix.platform.target }}
-          args: --release --out dist --find-interpreter --features=${{ matrix.features.value }}
-          sccache: "false"
-          manylinux: musllinux_1_2
-          before-script-linux: "apt-get update && apt-get install libssl-dev pkg-config -y"
+  #     - name: Build wheels
+  #       uses: PyO3/maturin-action@v1
+  #       with:
+  #         target: ${{ matrix.platform.target }}
+  #         args: --release --out dist --find-interpreter --features=${{ matrix.features.value }}
+  #         sccache: "false"
+  #         manylinux: musllinux_1_2
+  #         before-script-linux: "apt-get update && apt-get install libssl-dev pkg-config -y"
 
-      - name: Upload wheels
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheels-${{ matrix.features.package_name }}-musllinux-${{ matrix.platform.target }}-${{ github.ref_name }}
-          path: dist
+  #     - name: Upload wheels
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: wheels-${{ matrix.features.package_name }}-musllinux-${{ matrix.platform.target }}-${{ github.ref_name }}
+  #         path: dist
 
   windows:
     name: Windows
