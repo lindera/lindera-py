@@ -39,8 +39,8 @@ build: ## Build the project
 
 .PHONY: tests
 test: ## Test the project
-	cargo test --features=cjk
-	poetry run maturin develop --features=cjk
+	cargo test --all-features
+	poetry run maturin develop --all-features
 	poetry run pytest -v ./tests
 
 publish: ## Publish package to crates.io
