@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use pyo3::exceptions::PyTypeError;
 use pyo3::prelude::*;
 use pyo3::types::{PyBool, PyDict, PyFloat, PyInt, PyList, PyNone, PyString};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 pub fn pyany_to_value(value: &Bound<'_, PyAny>) -> PyResult<Value> {
     if value.is_instance_of::<PyString>() {
@@ -22,8 +22,7 @@ pub fn pyany_to_value(value: &Bound<'_, PyAny>) -> PyResult<Value> {
         Ok(Value::Null)
     } else {
         Err(PyErr::new::<PyTypeError, _>(format!(
-            "Unsupported Python object: {:?}",
-            value
+            "Unsupported Python object: {value}"
         )))
     }
 }

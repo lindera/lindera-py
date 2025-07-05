@@ -6,7 +6,7 @@ pub mod util;
 
 use pyo3::prelude::*;
 
-use crate::dictionary::{load_dictionary, load_user_dictionary, PyDictionary, PyUserDictionary};
+use crate::dictionary::{PyDictionary, PyUserDictionary, load_dictionary, load_user_dictionary};
 use crate::segmenter::PySegmenter;
 use crate::token::PyToken;
 use crate::tokenizer::{PyTokenizer, PyTokenizerBuilder};

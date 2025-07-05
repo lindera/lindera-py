@@ -4,8 +4,8 @@ use std::str::FromStr;
 use pyo3::{exceptions::PyValueError, prelude::*};
 
 use lindera::dictionary::{
-    load_dictionary_from_kind, load_dictionary_from_path, load_user_dictionary_from_bin,
-    load_user_dictionary_from_csv, Dictionary, DictionaryKind, UserDictionary,
+    Dictionary, DictionaryKind, UserDictionary, load_dictionary_from_kind,
+    load_dictionary_from_path, load_user_dictionary_from_bin, load_user_dictionary_from_csv,
 };
 #[pyclass(name = "Dictionary")]
 #[derive(Clone)]
@@ -27,7 +27,7 @@ pub fn load_dictionary(kind: Option<&str>, path: Option<&str>) -> PyResult<PyDic
             let k = DictionaryKind::from_str(kind_str)
                 .map_err(|_err| PyValueError::new_err("Invalid kind"))?;
             let dictionary = load_dictionary_from_kind(k).map_err(|err| {
-                PyValueError::new_err(format!("Failed to load dictionary: {}", err))
+                PyValueError::new_err(format!("Failed to load dictionary: {err}"))
             })?;
 
             Ok(PyDictionary { inner: dictionary })
@@ -35,7 +35,7 @@ pub fn load_dictionary(kind: Option<&str>, path: Option<&str>) -> PyResult<PyDic
         (None, Some(path_str)) => {
             let p = Path::new(path_str);
             let dictionary = load_dictionary_from_path(p).map_err(|err| {
-                PyValueError::new_err(format!("Failed to load dictionary: {}", err))
+                PyValueError::new_err(format!("Failed to load dictionary: {err}"))
             })?;
 
             Ok(PyDictionary { inner: dictionary })
@@ -58,7 +58,7 @@ pub fn load_user_dictionary(path: &str, kind: Option<&str>) -> PyResult<PyUserDi
                 let k = DictionaryKind::from_str(kind)
                     .map_err(|_err| PyValueError::new_err("Invalid kind"))?;
                 let user_dictionary = load_user_dictionary_from_csv(k, p).map_err(|err| {
-                    PyValueError::new_err(format!("Failed to load user dictionary: {}", err))
+                    PyValueError::new_err(format!("Failed to load user dictionary: {err}"))
                 })?;
 
                 Ok(PyUserDictionary {
@@ -75,7 +75,7 @@ pub fn load_user_dictionary(path: &str, kind: Option<&str>) -> PyResult<PyUserDi
             )),
             None => {
                 let user_dictionary = load_user_dictionary_from_bin(p).map_err(|err| {
-                    PyValueError::new_err(format!("Failed to load user dictionary: {}", err))
+                    PyValueError::new_err(format!("Failed to load user dictionary: {err}"))
                 })?;
 
                 Ok(PyUserDictionary {
@@ -84,8 +84,7 @@ pub fn load_user_dictionary(path: &str, kind: Option<&str>) -> PyResult<PyUserDi
             }
         },
         _ => Err(PyValueError::new_err(format!(
-            "Unsupported file: path:{}, kind:{:?}",
-            path, kind
+            "Unsupported file: path:{path}, kind:{kind:?}"
         ))),
     }
 }

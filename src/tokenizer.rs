@@ -27,7 +27,7 @@ impl PyTokenizerBuilder {
     #[pyo3(signature = ())]
     fn new() -> PyResult<Self> {
         let inner = TokenizerBuilder::new().map_err(|err| {
-            PyValueError::new_err(format!("Failed to create TokenizerBuilder: {}", err))
+            PyValueError::new_err(format!("Failed to create TokenizerBuilder: {err}"))
         })?;
 
         Ok(Self { inner })
@@ -37,7 +37,7 @@ impl PyTokenizerBuilder {
     #[allow(clippy::wrong_self_convention)]
     fn from_file(&self, file_path: &str) -> PyResult<Self> {
         let inner = TokenizerBuilder::from_file(Path::new(file_path)).map_err(|err| {
-            PyValueError::new_err(format!("Failed to load config from file: {}", err))
+            PyValueError::new_err(format!("Failed to load config from file: {err}"))
         })?;
 
         Ok(Self { inner })
@@ -46,7 +46,7 @@ impl PyTokenizerBuilder {
     #[pyo3(signature = (mode))]
     fn set_mode<'a>(mut slf: PyRefMut<'a, Self>, mode: &str) -> PyResult<PyRefMut<'a, Self>> {
         let m = Mode::from_str(mode)
-            .map_err(|err| PyValueError::new_err(format!("Failed to create mode: {}", err)))?;
+            .map_err(|err| PyValueError::new_err(format!("Failed to create mode: {err}")))?;
 
         slf.inner.set_segmenter_mode(&m);
 
@@ -59,7 +59,7 @@ impl PyTokenizerBuilder {
         kind: &str,
     ) -> PyResult<PyRefMut<'a, Self>> {
         let k = DictionaryKind::from_str(kind)
-            .map_err(|err| PyValueError::new_err(format!("Failed to create kind: {}", err)))?;
+            .map_err(|err| PyValueError::new_err(format!("Failed to create kind: {err}")))?;
 
         slf.inner.set_segmenter_dictionary_kind(&k);
 
@@ -93,7 +93,7 @@ impl PyTokenizerBuilder {
         kind: &str,
     ) -> PyResult<PyRefMut<'a, Self>> {
         let k = DictionaryKind::from_str(kind)
-            .map_err(|err| PyValueError::new_err(format!("Failed to create kind: {}", err)))?;
+            .map_err(|err| PyValueError::new_err(format!("Failed to create kind: {err}")))?;
 
         slf.inner.set_segmenter_user_dictionary_kind(&k);
 
@@ -137,7 +137,7 @@ impl PyTokenizerBuilder {
     fn build(&self) -> PyResult<PyTokenizer> {
         self.inner
             .build()
-            .map_err(|err| PyValueError::new_err(format!("Failed to build tokenizer: {}", err)))
+            .map_err(|err| PyValueError::new_err(format!("Failed to build tokenizer: {err}")))
             .map(|t| PyTokenizer { inner: t })
     }
 }
@@ -162,7 +162,7 @@ impl PyTokenizer {
     fn from_config(&self, config: &Bound<'_, PyDict>) -> PyResult<Self> {
         let config_value = pydict_to_value(config)?;
         let tokenizer = Tokenizer::from_config(&config_value)
-            .map_err(|err| PyValueError::new_err(format!("Failed to create tokenizer: {}", err)))?;
+            .map_err(|err| PyValueError::new_err(format!("Failed to create tokenizer: {err}")))?;
 
         Ok(Self { inner: tokenizer })
     }
@@ -179,7 +179,7 @@ impl PyTokenizer {
         };
 
         let filter = CharacterFilterLoader::load_from_value(name, &value).map_err(|err| {
-            PyValueError::new_err(format!("Failed to load character filter: {}", err))
+            PyValueError::new_err(format!("Failed to load character filter: {err}"))
         })?;
         self.inner.append_character_filter(filter);
 
@@ -197,9 +197,8 @@ impl PyTokenizer {
             None => json!({}),
         };
 
-        let filter = TokenFilterLoader::load_from_value(name, &value).map_err(|err| {
-            PyValueError::new_err(format!("Failed to load token filter: {}", err))
-        })?;
+        let filter = TokenFilterLoader::load_from_value(name, &value)
+            .map_err(|err| PyValueError::new_err(format!("Failed to load token filter: {err}")))?;
         self.inner.append_token_filter(filter);
 
         Ok(())
@@ -210,7 +209,7 @@ impl PyTokenizer {
         let mut tokens = self
             .inner
             .tokenize(text)
-            .map_err(|err| PyValueError::new_err(format!("Failed to tokenize text: {}", err)))?;
+            .map_err(|err| PyValueError::new_err(format!("Failed to tokenize text: {err}")))?;
 
         Ok(tokens
             .iter_mut()
