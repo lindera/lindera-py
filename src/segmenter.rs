@@ -28,7 +28,7 @@ impl PySegmenter {
         user_dictionary: Option<PyUserDictionary>,
     ) -> PyResult<Self> {
         let m = Mode::from_str(mode)
-            .map_err(|err| PyValueError::new_err(format!("Failed to create mode: {}", err)))?;
+            .map_err(|err| PyValueError::new_err(format!("Failed to create mode: {err}")))?;
         let d = dictionary.inner;
         let u = user_dictionary.map(|d| d.inner);
 
@@ -42,7 +42,7 @@ impl PySegmenter {
     fn from_config(&self, config: &Bound<'_, PyDict>) -> PyResult<Self> {
         let config_value = pydict_to_value(config)?;
         let segmenter = Segmenter::from_config(&config_value)
-            .map_err(|err| PyValueError::new_err(format!("Failed to create tokenizer: {}", err)))?;
+            .map_err(|err| PyValueError::new_err(format!("Failed to create tokenizer: {err}")))?;
 
         Ok(Self { inner: segmenter })
     }
@@ -52,7 +52,7 @@ impl PySegmenter {
         let mut tokens = self
             .inner
             .segment(Cow::Borrowed(text))
-            .map_err(|err| PyValueError::new_err(format!("Failed to tokenize text: {}", err)))?;
+            .map_err(|err| PyValueError::new_err(format!("Failed to tokenize text: {err}")))?;
 
         Ok(tokens
             .iter_mut()
