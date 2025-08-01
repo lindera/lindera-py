@@ -6,7 +6,9 @@ use pyo3::{exceptions::PyValueError, prelude::*};
 use lindera::dictionary::{
     Dictionary, DictionaryKind, UserDictionary, load_dictionary_from_kind,
     load_dictionary_from_path, load_user_dictionary_from_bin, load_user_dictionary_from_csv,
+    resolve_builder, resolve_metadata,
 };
+
 #[pyclass(name = "Dictionary")]
 #[derive(Clone)]
 pub struct PyDictionary {
@@ -17,6 +19,58 @@ pub struct PyDictionary {
 #[derive(Clone)]
 pub struct PyUserDictionary {
     pub inner: UserDictionary,
+}
+
+#[pyfunction]
+#[pyo3(signature = (kind, input_dir, output_dir))]
+pub fn build_dictionary(kind: &str, input_dir: &str, output_dir: &str) -> PyResult<()> {
+    let metadata = resolve_metadata(
+        DictionaryKind::from_str(kind).map_err(|_err| PyValueError::new_err("Invalid kind"))?,
+    )
+    .map_err(|err| PyValueError::new_err(format!("Failed to resolve metadata: {err}")))?;
+
+    let builder = resolve_builder(
+        DictionaryKind::from_str(kind).map_err(|_err| PyValueError::new_err("Invalid kind"))?,
+    )
+    .map_err(|err| PyValueError::new_err(format!("Failed to resolve builder: {err}")))?;
+
+    builder
+        .build_dictionary(&metadata, Path::new(input_dir), Path::new(output_dir))
+        .map_err(|err| PyValueError::new_err(format!("Failed to build dictionary: {err}")))?;
+
+    Ok(())
+}
+
+#[pyfunction]
+#[pyo3(signature = (kind, input_file, output_dir))]
+pub fn build_user_dictionary(kind: &str, input_file: &str, output_dir: &str) -> PyResult<()> {
+    let metadata = resolve_metadata(
+        DictionaryKind::from_str(kind).map_err(|_err| PyValueError::new_err("Invalid kind"))?,
+    )
+    .map_err(|err| PyValueError::new_err(format!("Failed to resolve metadata: {err}")))?;
+
+    let builder = resolve_builder(
+        DictionaryKind::from_str(kind).map_err(|_err| PyValueError::new_err("Invalid kind"))?,
+    )
+    .map_err(|err| PyValueError::new_err(format!("Failed to resolve builder: {err}")))?;
+
+    // Determine output file name based on input file
+    // If the input file has no name, we cannot determine the output file name.
+    // In that case, we return an error.
+    // e.g., /path/to/input/file.txt -> /path/to/output/file.bin
+    let output_file = if let Some(filename) = Path::new(input_file).file_name() {
+        let mut output_file = Path::new(output_dir).join(filename);
+        output_file.set_extension("bin");
+        output_file
+    } else {
+        return Err(PyValueError::new_err("Failed to determine output filename"));
+    };
+
+    builder
+        .build_user_dictionary(&metadata, Path::new(input_file), output_file.as_path())
+        .map_err(|err| PyValueError::new_err(format!("Failed to build user dictionary: {err}")))?;
+
+    Ok(())
 }
 
 #[pyfunction]

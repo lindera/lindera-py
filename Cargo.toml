@@ -1,6 +1,6 @@
 [package]
 name = "lindera-py"
-version = "0.44.1"
+version = "0.45.0"
 edition = "2024"
 description = "Python binding for Lindera."
 documentation = "https://docs.rs/lindera-py"
@@ -34,6 +34,6 @@ default = [] # No directories included
 [dependencies]
 pyo3 = { version = "0.25.1", features = ["extension-module"] }
 serde = { version = "1.0.219", features = ["derive"] }
-serde_json = "1.0.140"
+serde_json = "1.0.142"
 
-lindera = "0.44.1"
+lindera = "0.45.0"
