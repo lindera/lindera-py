@@ -6,7 +6,10 @@ pub mod util;
 
 use pyo3::prelude::*;
 
-use crate::dictionary::{PyDictionary, PyUserDictionary, load_dictionary, load_user_dictionary};
+use crate::dictionary::{
+    PyDictionary, PyUserDictionary, build_dictionary, build_user_dictionary, load_dictionary,
+    load_user_dictionary,
+};
 use crate::segmenter::PySegmenter;
 use crate::token::PyToken;
 use crate::tokenizer::{PyTokenizer, PyTokenizerBuilder};
@@ -20,6 +23,8 @@ fn lindera_py(module: &Bound<'_, PyModule>) -> PyResult<()> {
     module.add_class::<PyTokenizer>()?;
     module.add_class::<PySegmenter>()?;
 
+    module.add_function(wrap_pyfunction!(build_dictionary, module)?)?;
+    module.add_function(wrap_pyfunction!(build_user_dictionary, module)?)?;
     module.add_function(wrap_pyfunction!(load_dictionary, module)?)?;
     module.add_function(wrap_pyfunction!(load_user_dictionary, module)?)?;
 
