@@ -1,3 +1,4 @@
+use std::fs;
 use std::path::Path;
 use std::str::FromStr;
 
@@ -24,15 +25,19 @@ pub struct PyUserDictionary {
 #[pyfunction]
 #[pyo3(signature = (kind, input_dir, output_dir))]
 pub fn build_dictionary(kind: &str, input_dir: &str, output_dir: &str) -> PyResult<()> {
-    let metadata = resolve_metadata(
-        DictionaryKind::from_str(kind).map_err(|_err| PyValueError::new_err("Invalid kind"))?,
-    )
-    .map_err(|err| PyValueError::new_err(format!("Failed to resolve metadata: {err}")))?;
+    let dict_kind =
+        DictionaryKind::from_str(kind).map_err(|_err| PyValueError::new_err("Invalid kind"))?;
 
-    let builder = resolve_builder(
-        DictionaryKind::from_str(kind).map_err(|_err| PyValueError::new_err("Invalid kind"))?,
-    )
-    .map_err(|err| PyValueError::new_err(format!("Failed to resolve builder: {err}")))?;
+    let metadata = resolve_metadata(dict_kind.clone())
+        .map_err(|err| PyValueError::new_err(format!("Failed to resolve metadata: {err}")))?;
+
+    let builder = resolve_builder(dict_kind)
+        .map_err(|err| PyValueError::new_err(format!("Failed to resolve builder: {err}")))?;
+
+    // Ensure output directory exists
+    fs::create_dir_all(output_dir).map_err(|err| {
+        PyValueError::new_err(format!("Failed to create output directory: {err}"))
+    })?;
 
     builder
         .build_dictionary(&metadata, Path::new(input_dir), Path::new(output_dir))
@@ -44,15 +49,19 @@ pub fn build_dictionary(kind: &str, input_dir: &str, output_dir: &str) -> PyResu
 #[pyfunction]
 #[pyo3(signature = (kind, input_file, output_dir))]
 pub fn build_user_dictionary(kind: &str, input_file: &str, output_dir: &str) -> PyResult<()> {
-    let metadata = resolve_metadata(
-        DictionaryKind::from_str(kind).map_err(|_err| PyValueError::new_err("Invalid kind"))?,
-    )
-    .map_err(|err| PyValueError::new_err(format!("Failed to resolve metadata: {err}")))?;
+    let dict_kind =
+        DictionaryKind::from_str(kind).map_err(|_err| PyValueError::new_err("Invalid kind"))?;
 
-    let builder = resolve_builder(
-        DictionaryKind::from_str(kind).map_err(|_err| PyValueError::new_err("Invalid kind"))?,
-    )
-    .map_err(|err| PyValueError::new_err(format!("Failed to resolve builder: {err}")))?;
+    let metadata = resolve_metadata(dict_kind.clone())
+        .map_err(|err| PyValueError::new_err(format!("Failed to resolve metadata: {err}")))?;
+
+    let builder = resolve_builder(dict_kind)
+        .map_err(|err| PyValueError::new_err(format!("Failed to resolve builder: {err}")))?;
+
+    // Ensure output directory exists
+    fs::create_dir_all(output_dir).map_err(|err| {
+        PyValueError::new_err(format!("Failed to create output directory: {err}"))
+    })?;
 
     // Determine output file name based on input file
     // If the input file has no name, we cannot determine the output file name.
@@ -125,7 +134,7 @@ pub fn load_user_dictionary(path: &str, kind: Option<&str>) -> PyResult<PyUserDi
         },
         "bin" => match kind {
             Some(_kind) => Err(PyValueError::new_err(
-                "Dictionary type must be None if Binaly file specified",
+                "Dictionary type must be None if Binary file specified",
             )),
             None => {
                 let user_dictionary = load_user_dictionary_from_bin(p).map_err(|err| {
