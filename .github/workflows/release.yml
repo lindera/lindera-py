@@ -116,7 +116,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist --find-interpreter --features=${{ matrix.features.value }} --manifest-path pyproject-${{ matrix.features.value }}.toml
+          args: --release --out dist --find-interpreter --features=${{ matrix.features.value }} --config-file pyproject-${{ matrix.features.value }}.toml
           sccache: "false"
           manylinux: auto
           before-script-linux: "yum install openssl-devel devtoolset-10-libatomic-devel perl-IPC-Cmd -y"
@@ -181,7 +181,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist --find-interpreter --features=${{ matrix.features.value }} --manifest-path pyproject-${{ matrix.features.value }}.toml
+          args: --release --out dist --find-interpreter --features=${{ matrix.features.value }} --config-file pyproject-${{ matrix.features.value }}.toml
           sccache: "false"
           manylinux: auto
           before-script-linux: "apt-get update && apt-get install libssl-dev pkg-config -y"
@@ -243,7 +243,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist --find-interpreter --features=${{ matrix.features.value }} --manifest-path pyproject-${{ matrix.features.value }}.toml
+          args: --release --out dist --find-interpreter --features=${{ matrix.features.value }} --config-file pyproject-${{ matrix.features.value }}.toml
           sccache: "false"
 
       - name: Upload wheels
@@ -306,7 +306,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist --find-interpreter --features=${{ matrix.features.value }} --manifest-path pyproject-${{ matrix.features.value }}.toml
+          args: --release --out dist --find-interpreter --features=${{ matrix.features.value }} --config-file pyproject-${{ matrix.features.value }}.toml
           sccache: "false"
 
       - name: Upload wheels
