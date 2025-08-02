@@ -8,8 +8,8 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.13"
-maturin = "^1.9.0"
-patchelf = "^0.17.2.2"
+maturin = "^1.9.2"
+patchelf = "^0.17.2.4"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.1"
@@ -18,7 +18,7 @@ isort = "^6.0.1"
 autopep8 = "^2.3.2"
 flake8 = "^7.3.0"
 flake8-pyproject = "^1.2.3"
-mypy = "^1.16.1"
+mypy = "^1.17.1"
 
 [build-system]
 requires = ["poetry-core"]
