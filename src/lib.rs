@@ -14,6 +14,11 @@ use crate::segmenter::PySegmenter;
 use crate::token::PyToken;
 use crate::tokenizer::{PyTokenizer, PyTokenizerBuilder};
 
+#[pyfunction]
+pub fn version() -> String {
+    env!("CARGO_PKG_VERSION").to_string()
+}
+
 #[pymodule]
 fn lindera_py(module: &Bound<'_, PyModule>) -> PyResult<()> {
     module.add_class::<PyToken>()?;
@@ -28,5 +33,6 @@ fn lindera_py(module: &Bound<'_, PyModule>) -> PyResult<()> {
     module.add_function(wrap_pyfunction!(load_dictionary, module)?)?;
     module.add_function(wrap_pyfunction!(load_user_dictionary, module)?)?;
 
+    module.add_function(wrap_pyfunction!(version, module)?)?;
     Ok(())
 }
