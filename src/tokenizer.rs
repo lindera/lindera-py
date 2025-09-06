@@ -4,21 +4,21 @@ use std::str::FromStr;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
-use serde_json::json;
 
-use lindera::character_filter::CharacterFilterLoader;
-use lindera::dictionary::DictionaryKind;
 use lindera::mode::Mode;
-use lindera::token_filter::TokenFilterLoader;
 use lindera::tokenizer::{Tokenizer, TokenizerBuilder};
 
+use crate::character_filter::PyCharacterFilter;
 use crate::segmenter::PySegmenter;
 use crate::token::PyToken;
+use crate::token_filter::PyTokenFilter;
 use crate::util::pydict_to_value;
 
 #[pyclass(name = "TokenizerBuilder")]
 pub struct PyTokenizerBuilder {
     pub inner: TokenizerBuilder,
+    character_filters: Vec<PyCharacterFilter>,
+    token_filters: Vec<PyTokenFilter>,
 }
 
 #[pymethods]
@@ -30,7 +30,11 @@ impl PyTokenizerBuilder {
             PyValueError::new_err(format!("Failed to create TokenizerBuilder: {err}"))
         })?;
 
-        Ok(Self { inner })
+        Ok(Self {
+            inner,
+            character_filters: Vec::new(),
+            token_filters: Vec::new(),
+        })
     }
 
     #[pyo3(signature = (file_path))]
@@ -40,7 +44,11 @@ impl PyTokenizerBuilder {
             PyValueError::new_err(format!("Failed to load config from file: {err}"))
         })?;
 
-        Ok(Self { inner })
+        Ok(Self {
+            inner,
+            character_filters: Vec::new(),
+            token_filters: Vec::new(),
+        })
     }
 
     #[pyo3(signature = (mode))]
@@ -53,98 +61,61 @@ impl PyTokenizerBuilder {
         Ok(slf)
     }
 
-    #[pyo3(signature = (kind))]
-    fn set_dictionary_kind<'a>(
-        mut slf: PyRefMut<'a, Self>,
-        kind: &str,
-    ) -> PyResult<PyRefMut<'a, Self>> {
-        let k = DictionaryKind::from_str(kind)
-            .map_err(|err| PyValueError::new_err(format!("Failed to create kind: {err}")))?;
-
-        slf.inner.set_segmenter_dictionary_kind(&k);
-
-        Ok(slf)
-    }
-
     #[pyo3(signature = (path))]
-    fn set_dictionary_path<'a>(
-        mut slf: PyRefMut<'a, Self>,
-        path: &str,
-    ) -> PyResult<PyRefMut<'a, Self>> {
-        slf.inner.set_segmenter_dictionary_path(Path::new(path));
+    fn set_dictionary<'a>(mut slf: PyRefMut<'a, Self>, path: &str) -> PyResult<PyRefMut<'a, Self>> {
+        slf.inner.set_segmenter_dictionary(path);
 
         Ok(slf)
     }
 
-    #[pyo3(signature = (path))]
-    fn set_user_dictionary_path<'a>(
+    #[pyo3(signature = (uri))]
+    fn set_user_dictionary<'a>(
         mut slf: PyRefMut<'a, Self>,
-        path: &str,
+        uri: &str,
     ) -> PyResult<PyRefMut<'a, Self>> {
-        slf.inner
-            .set_segmenter_user_dictionary_path(Path::new(path));
-
+        slf.inner.set_segmenter_user_dictionary(uri);
         Ok(slf)
     }
 
-    #[pyo3(signature = (kind))]
-    fn set_user_dictionary_kind<'a>(
-        mut slf: PyRefMut<'a, Self>,
-        kind: &str,
-    ) -> PyResult<PyRefMut<'a, Self>> {
-        let k = DictionaryKind::from_str(kind)
-            .map_err(|err| PyValueError::new_err(format!("Failed to create kind: {err}")))?;
-
-        slf.inner.set_segmenter_user_dictionary_kind(&k);
-
-        Ok(slf)
-    }
-
-    #[pyo3(signature = (name, **args))]
+    // Character filter and token filter integration
+    #[pyo3(signature = (character_filter))]
     fn append_character_filter<'a>(
         mut slf: PyRefMut<'a, Self>,
-        name: &str,
-        args: Option<&Bound<'_, PyDict>>,
+        character_filter: PyCharacterFilter,
     ) -> PyResult<PyRefMut<'a, Self>> {
-        let character_filter_args = match args {
-            Some(a) => pydict_to_value(a)?,
-            None => json!({}),
-        };
-
-        slf.inner
-            .append_character_filter(name, &character_filter_args);
-
+        slf.character_filters.push(character_filter);
         Ok(slf)
     }
 
-    #[pyo3(signature = (name, **args))]
+    #[pyo3(signature = (token_filter))]
     fn append_token_filter<'a>(
         mut slf: PyRefMut<'a, Self>,
-        name: &str,
-        args: Option<&Bound<'_, PyDict>>,
+        token_filter: PyTokenFilter,
     ) -> PyResult<PyRefMut<'a, Self>> {
-        let token_filter_args = match args {
-            Some(a) => pydict_to_value(a)?,
-            None => json!({}),
-        };
-
-        slf.inner.append_token_filter(name, &token_filter_args);
-
+        slf.token_filters.push(token_filter);
         Ok(slf)
     }
 
     #[pyo3(signature = ())]
     fn build(&self) -> PyResult<PyTokenizer> {
-        self.inner
+        let tokenizer = self
+            .inner
             .build()
-            .map_err(|err| PyValueError::new_err(format!("Failed to build tokenizer: {err}")))
-            .map(|t| PyTokenizer { inner: t })
+            .map_err(|err| PyValueError::new_err(format!("Failed to build tokenizer: {err}")))?;
+
+        Ok(PyTokenizer {
+            inner: tokenizer,
+            character_filters: self.character_filters.clone(),
+            token_filters: self.token_filters.clone(),
+        })
     }
 }
 
 #[pyclass(name = "Tokenizer")]
 pub struct PyTokenizer {
     inner: Tokenizer,
+    character_filters: Vec<PyCharacterFilter>,
+    token_filters: Vec<PyTokenFilter>,
 }
 
 #[pymethods]
@@ -154,6 +125,8 @@ impl PyTokenizer {
     fn new(segmenter: PySegmenter) -> PyResult<Self> {
         Ok(Self {
             inner: Tokenizer::new(segmenter.inner),
+            character_filters: Vec::new(),
+            token_filters: Vec::new(),
         })
     }
 
@@ -164,64 +137,45 @@ impl PyTokenizer {
         let tokenizer = Tokenizer::from_config(&config_value)
             .map_err(|err| PyValueError::new_err(format!("Failed to create tokenizer: {err}")))?;
 
-        Ok(Self { inner: tokenizer })
-    }
-
-    #[pyo3(signature = (name, **args))]
-    fn append_character_filter(
-        &mut self,
-        name: &str,
-        args: Option<&Bound<'_, PyDict>>,
-    ) -> PyResult<()> {
-        let value = match args {
-            Some(pydict) => pydict_to_value(pydict)?,
-            None => json!({}),
-        };
-
-        let filter = CharacterFilterLoader::load_from_value(name, &value).map_err(|err| {
-            PyValueError::new_err(format!("Failed to load character filter: {err}"))
-        })?;
-        self.inner.append_character_filter(filter);
-
-        Ok(())
-    }
-
-    #[pyo3(signature = (name, **args))]
-    fn append_token_filter(
-        &mut self,
-        name: &str,
-        args: Option<&Bound<'_, PyDict>>,
-    ) -> PyResult<()> {
-        let value = match args {
-            Some(pydict) => pydict_to_value(pydict)?,
-            None => json!({}),
-        };
-
-        let filter = TokenFilterLoader::load_from_value(name, &value)
-            .map_err(|err| PyValueError::new_err(format!("Failed to load token filter: {err}")))?;
-        self.inner.append_token_filter(filter);
-
-        Ok(())
+        Ok(Self {
+            inner: tokenizer,
+            character_filters: Vec::new(),
+            token_filters: Vec::new(),
+        })
     }
 
     #[pyo3(signature = (text))]
     fn tokenize(&self, text: &str) -> PyResult<Vec<PyToken>> {
+        // Apply character filters first
+        let mut processed_text = text.to_string();
+        for char_filter in &self.character_filters {
+            processed_text = char_filter.apply(&processed_text)?;
+        }
+
+        // Tokenize the processed text
         let mut tokens = self
             .inner
-            .tokenize(text)
+            .tokenize(&processed_text)
             .map_err(|err| PyValueError::new_err(format!("Failed to tokenize text: {err}")))?;
 
-        Ok(tokens
+        // Convert to PyToken
+        let mut py_tokens: Vec<PyToken> = tokens
             .iter_mut()
             .map(|t| PyToken {
-                #[allow(clippy::suspicious_to_owned)]
-                text: t.text.to_owned().to_string(),
+                text: t.text.to_string(),
                 byte_start: t.byte_start,
                 byte_end: t.byte_end,
                 position: t.position,
                 position_length: t.position_length,
                 details: t.details().iter().map(|d| d.to_string()).collect(),
             })
-            .collect())
+            .collect();
+
+        // Apply token filters
+        for token_filter in &self.token_filters {
+            py_tokens = token_filter.apply(py_tokens)?;
+        }
+
+        Ok(py_tokens)
     }
 }

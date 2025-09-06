@@ -25,23 +25,28 @@ format: ## Format the project
 	poetry run black ./examples ./tests
 
 lint: ## Lint the project
-	cargo clippy --features=cjk
+	cargo clippy --features=embedded-ipadic
 	poetry run isort --check-only --diff ./examples ./tests
 	poetry run black --check ./examples ./tests
 	poetry run flake8 ./examples ./tests
 	poetry run mypy ./examples ./tests
 
 develop: ## Build Python module in development mode and install it into the current Python environment
-	poetry run maturin develop --features=cjk
+	poetry run maturin develop --features=embedded-ipadic
 
 build: ## Build the project
-	poetry run maturin build -i python --release --features=cjk
+	poetry run maturin build -i python --release --features=embedded-ipadic
 
 .PHONY: tests
 test: ## Test the project
-	cargo test --all-features
-	poetry run maturin develop --all-features
+	cargo test --features=embedded-ipadic
+	poetry run maturin develop --features=embedded-ipadic
 	poetry run pytest -v ./tests
+
+.PHONY: run-examples
+run-examples: ## Run examples
+	poetry run maturin develop --features=embedded-ipadic
+	poetry run python ./examples/basic_usage.py
 
 publish: ## Publish package to crates.io
 ifeq ($(shell curl -s -XGET -H "User-Agent: $(USER_AGENT) ($(USER)@$(HOSTNAME))" https://crates.io/api/v1/crates/lindera-py | jq -r '.versions[].num' | grep $(LINDERA_PY_VERSION)),)

@@ -43,7 +43,7 @@ pub fn pydict_to_value(pydict: &Bound<'_, PyDict>) -> PyResult<Value> {
     Ok(json!(map))
 }
 
-pub fn value_to_pydict(py: Python, value: &Value) -> PyResult<PyObject> {
+pub fn value_to_pydict(py: Python, value: &Value) -> PyResult<Py<PyAny>> {
     match value {
         Value::Null => Ok(py.None()),
         Value::Bool(b) => Ok(PyBool::new(py, *b).into_pyobject(py)?.to_owned().into()),
@@ -75,93 +75,4 @@ pub fn value_to_pydict(py: Python, value: &Value) -> PyResult<PyObject> {
 }
 
 #[cfg(test)]
-mod tests {
-    // use pyo3::types::IntoPyDict;
-    // use serde_json::json;
-
-    // use super::*;
-
-    // #[test]
-    // fn test_pydict_to_value() {
-    //     Python::with_gil(|py| {
-    //         let py_dict = [("key1", "value1"), ("key2", "value2")].into_py_dict_bound(py);
-    //         let value = pydict_to_value(&py_dict).unwrap();
-    //         let expected = json!({"key1": "value1", "key2": "value2"});
-    //         assert_eq!(value, expected);
-    //     });
-    // }
-
-    // #[test]
-    // fn test_python_to_json_with_dict() {
-    //     Python::with_gil(|py| {
-    //         let py_dict = [("key1", "value1"), ("key2", "value2")].into_py_dict_bound(py);
-    //         let value = python_to_json(&py_dict).unwrap();
-    //         let expected = json!({"key1": "value1", "key2": "value2"});
-    //         assert_eq!(value, expected);
-    //     });
-    // }
-
-    // #[test]
-    // fn test_python_to_json_with_list() {
-    //     Python::with_gil(|py| {
-    //         let binding = vec!["value1", "value2"].into_py(py);
-    //         let py_list = binding.downcast_bound::<PyAny>(py).unwrap();
-    //         let value = python_to_json(py_list).unwrap();
-    //         let expected = json!(["value1", "value2"]);
-    //         assert_eq!(value, expected);
-    //     });
-    // }
-
-    // #[test]
-    // fn test_python_to_json_with_string() {
-    //     Python::with_gil(|py| {
-    //         let binding = "value1".to_string().into_py(py);
-    //         let py_str = binding.downcast_bound::<PyAny>(py).unwrap();
-    //         let value = python_to_json(py_str).unwrap();
-    //         let expected = json!("value");
-    //         assert_eq!(value, expected);
-    //     });
-    // }
-
-    // #[test]
-    // fn test_python_to_json_with_int() {
-    //     Python::with_gil(|py| {
-    //         let binding = 42_i64.into_py(py);
-    //         let py_int = binding.downcast_bound::<PyAny>(py).unwrap();
-    //         let value = python_to_json(py_int).unwrap();
-    //         let expected = json!(42);
-    //         assert_eq!(value, expected);
-    //     });
-    // }
-
-    // #[test]
-    // fn test_python_to_json_with_float() {
-    //     Python::with_gil(|py| {
-    //         let binding = 3.14_f64.into_py(py);
-    //         let py_float = binding.downcast_bound::<PyAny>(py).unwrap();
-    //         let value = python_to_json(py_float).unwrap();
-    //         let expected = json!(3.14);
-    //         assert_eq!(value, expected);
-    //     });
-    // }
-
-    // #[test]
-    // fn test_python_to_json_with_none() {
-    //     Python::with_gil(|py| {
-    //         let binding = py.None();
-    //         let py_none = binding.downcast_bound::<PyAny>(py).unwrap();
-    //         let value = python_to_json(py_none).unwrap();
-    //         let expected = json!(null);
-    //         assert_eq!(value, expected);
-    //     });
-    // }
-
-    // #[test]
-    // fn test_python_to_json_with_unsupported_type() {
-    //     Python::with_gil(|py| {
-    //         let py_tuple = (1, 2).into_py(py);
-    //         let result = python_to_json(py_tuple);
-    //         assert!(result.is_err());
-    //     });
-    // }
-}
+mod tests {}

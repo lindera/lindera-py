@@ -17,23 +17,29 @@ path = "src/lib.rs"
 crate-type = ["cdylib"]
 
 [features]
-ipadic = ["lindera/ipadic"] # Include Japanese dictionary (IPADIC)
-ipadic-neologd = [
-    "lindera/ipadic-neologd",
+embedded-ipadic = [
+    "lindera/embedded-ipadic",
+] # Include Japanese dictionary (IPADIC)
+embedded-ipadic-neologd = [
+    "lindera/embedded-ipadic-neologd",
 ] # Include Japanese dictionary (IPADIC NEologd)
-unidic = ["lindera/unidic"] # Include Japanese dictionary (UniDic)
-ko-dic = ["lindera/ko-dic"] # Include Korean dictionary (ko-dic)
-cc-cedict = ["lindera/cc-cedict"] # Include Chinese dictionary (CC-CEDICT)
-cjk = [
-    "ipadic",
-    "ko-dic",
-    "cc-cedict",
+embedded-unidic = [
+    "lindera/embedded-unidic",
+] # Include Japanese dictionary (UniDic)
+embedded-ko-dic = [
+    "lindera/embedded-ko-dic",
+] # Include Korean dictionary (ko-dic)
+embedded-cc-cedict = [
+    "lindera/embedded-cc-cedict",
+] # Include Chinese dictionary (CC-CEDICT)
+embedded-cjk = [
+    "lindera/embedded-cjk",
 ] # Include CJK dictionary (CC-CEDICT, IPADIC, ko-dic)
 default = [] # No directories included
 
 [dependencies]
-pyo3 = { version = "0.25.1", features = ["extension-module"] }
+pyo3 = { version = "0.26.0", features = ["extension-module"] }
 serde = { version = "1.0.219", features = ["derive"] }
-serde_json = "1.0.142"
+serde_json = "1.0.143"
 
-lindera = "0.45.0"
+lindera = "1.1.2"
