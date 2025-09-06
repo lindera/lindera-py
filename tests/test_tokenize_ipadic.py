@@ -1,8 +1,8 @@
-from lindera_py import Segmenter, Tokenizer, load_dictionary
+from lindera import Segmenter, Tokenizer, load_dictionary
 
 
 def test_tokenize_with_ipadic():
-    dictionary = load_dictionary("ipadic")
+    dictionary = load_dictionary("embedded://ipadic")
     segmenter = Segmenter("normal", dictionary)
     tokenizer = Tokenizer(segmenter)
 

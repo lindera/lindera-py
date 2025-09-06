@@ -22,7 +22,7 @@ impl PyCharacterFilterKind {
     }
 
     fn __repr__(&self) -> String {
-        format!("CharacterFilterKind.{:?}", self)
+        format!("CharacterFilterKind.{self:?}")
     }
 }
 
@@ -44,8 +44,7 @@ impl PyCharacterFilter {
             "unicode_normalize" => PyCharacterFilterKind::UnicodeNormalize,
             _ => {
                 return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
-                    "Unknown character filter kind: {}",
-                    kind
+                    "Unknown character filter kind: {kind}"
                 )));
             }
         };

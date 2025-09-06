@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from lindera_py import Segmenter, Tokenizer, load_dictionary, load_user_dictionary
+from lindera import Segmenter, Tokenizer, load_dictionary, load_user_dictionary
 
 project_root = Path(__file__).resolve().parent.parent
 

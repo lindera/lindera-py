@@ -1,7 +1,7 @@
 import tarfile
 import urllib.request
 
-from lindera_py import Segmenter, Tokenizer, build_dictionary, load_dictionary, version
+from lindera import Segmenter, Tokenizer, build_dictionary, load_dictionary, version
 
 
 def main():

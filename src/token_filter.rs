@@ -52,7 +52,7 @@ impl PyTokenFilterKind {
     }
 
     fn __repr__(&self) -> String {
-        format!("TokenFilterKind.{:?}", self)
+        format!("TokenFilterKind.{self:?}")
     }
 }
 
@@ -88,8 +88,7 @@ impl PyTokenFilter {
             "uppercase" => PyTokenFilterKind::Uppercase,
             _ => {
                 return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
-                    "Unknown token filter kind: {}",
-                    kind
+                    "Unknown token filter kind: {kind}"
                 )));
             }
         };

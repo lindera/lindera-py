@@ -26,7 +26,7 @@ impl PyCompressionAlgorithm {
     }
 
     fn __repr__(&self) -> String {
-        format!("CompressionAlgorithm.{:?}", self)
+        format!("CompressionAlgorithm.{self:?}")
     }
 }
 
@@ -73,6 +73,7 @@ pub struct PyMetadata {
 impl PyMetadata {
     #[new]
     #[pyo3(signature = (name=None, encoding=None, compress_algorithm=None, default_word_cost=None, default_left_context_id=None, default_right_context_id=None, default_field_value=None, flexible_csv=None, skip_invalid_cost_or_id=None, normalize_details=None, dictionary_schema=None, user_dictionary_schema=None))]
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
         name: Option<String>,
         encoding: Option<String>,
@@ -98,7 +99,7 @@ impl PyMetadata {
             flexible_csv: flexible_csv.unwrap_or(false),
             skip_invalid_cost_or_id: skip_invalid_cost_or_id.unwrap_or(false),
             normalize_details: normalize_details.unwrap_or(false),
-            dictionary_schema: dictionary_schema.unwrap_or_else(|| PySchema::default()),
+            dictionary_schema: dictionary_schema.unwrap_or_else(PySchema::create_default),
             user_dictionary_schema: user_dictionary_schema.unwrap_or_else(|| {
                 PySchema::new(vec![
                     "surface".to_string(),
@@ -110,7 +111,7 @@ impl PyMetadata {
     }
 
     #[staticmethod]
-    pub fn default() -> Self {
+    pub fn create_default() -> Self {
         PyMetadata::new(
             None, None, None, None, None, None, None, None, None, None, None, None,
         )

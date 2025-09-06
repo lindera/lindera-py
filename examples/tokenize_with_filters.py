@@ -1,4 +1,4 @@
-from lindera_py import Segmenter, Tokenizer, load_dictionary
+from lindera import Segmenter, Tokenizer, load_dictionary
 
 
 def main():

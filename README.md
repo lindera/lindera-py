@@ -67,7 +67,7 @@ lindera-python provides a comprehensive Python interface to the Lindera 1.1.1 mo
 % cd lindera-python
 
 # Set Python version for this project
-% pyenv local 3.12.3
+% pyenv local 3.13.5
 
 # Make Python virtual environment
 % python -m venv .venv
@@ -84,7 +84,7 @@ lindera-python provides a comprehensive Python interface to the Lindera 1.1.1 mo
 This command takes a long time because it builds a library that includes all the dictionaries.
 
 ```shell
-(.venv) % make maturin-develop
+(.venv) % make develop
 ```
 
 ## Quick Start
