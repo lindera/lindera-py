@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 
 VERSION := $(shell poetry version -s)
-LINDERA_PY_VERSION ?= $(shell cargo metadata --no-deps --format-version=1 | jq -r '.packages[] | select(.name=="lindera-py") | .version')
+LINDERA_PYTHON_VERSION ?= $(shell cargo metadata --no-deps --format-version=1 | jq -r '.packages[] | select(.name=="lindera-python") | .version')
 
 USER_AGENT ?= $(shell curl --version | head -n1 | awk '{print $1"/"$2}')
 USER ?= $(shell whoami)
@@ -49,7 +49,7 @@ run-examples: ## Run examples
 	poetry run python ./examples/basic_usage.py
 
 publish: ## Publish package to crates.io
-ifeq ($(shell curl -s -XGET -H "User-Agent: $(USER_AGENT) ($(USER)@$(HOSTNAME))" https://crates.io/api/v1/crates/lindera-py | jq -r '.versions[].num' | grep $(LINDERA_PY_VERSION)),)
+ifeq ($(shell curl -s -XGET -H "User-Agent: $(USER_AGENT) ($(USER)@$(HOSTNAME))" https://crates.io/api/v1/crates/lindera-python | jq -r '.versions[].num' | grep $(LINDERA_PYTHON_VERSION)),)
 	(cargo package && cargo publish)
 endif
 

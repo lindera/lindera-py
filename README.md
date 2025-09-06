@@ -1,10 +1,10 @@
-# lindera-py
+# lindera-python
 
 Python binding for [Lindera](https://github.com/lindera/lindera), a Japanese morphological analysis engine.
 
 ## Overview
 
-lindera-py provides a comprehensive Python interface to the Lindera 1.1.1 morphological analysis engine, supporting Japanese, Korean, and Chinese text analysis. This implementation includes all major features:
+lindera-python provides a comprehensive Python interface to the Lindera 1.1.1 morphological analysis engine, supporting Japanese, Korean, and Chinese text analysis. This implementation includes all major features:
 
 - **Multi-language Support**: Japanese (IPADIC, UniDic), Korean (ko-dic), Chinese (CC-CEDICT)
 - **Character Filters**: Text preprocessing with mapping, regex, Unicode normalization, and Japanese iteration mark handling
@@ -62,9 +62,9 @@ lindera-py provides a comprehensive Python interface to the Lindera 1.1.1 morpho
 ## Setup repository and activate virtual environment
 
 ```shell
-# Clone lindera-py project repository
-% git clone git@github.com:lindera/lindera-py.git
-% cd lindera-py
+# Clone lindera-python project repository
+% git clone git@github.com:lindera/lindera-python.git
+% cd lindera-python
 
 # Set Python version for this project
 % pyenv local 3.12.3
@@ -75,11 +75,11 @@ lindera-py provides a comprehensive Python interface to the Lindera 1.1.1 morpho
 # Activate Python virtual environment
 % source .venv/bin/activate
 
-# Initialize lindera-py project
+# Initialize lindera-python project
 (.venv) % make init
 ```
 
-## Install lindera-py as a library in the virtual environment
+## Install lindera-python as a library in the virtual environment
 
 This command takes a long time because it builds a library that includes all the dictionaries.
 

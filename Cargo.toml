@@ -1,18 +1,18 @@
 [package]
-name = "lindera-py"
+name = "lindera-python"
 version = "0.45.0"
 edition = "2024"
 description = "Python binding for Lindera."
-documentation = "https://docs.rs/lindera-py"
-homepage = "https://github.com/lindera-morphology/lindera-py"
-repository = "https://github.com/lindera-morphology/lindera-py"
+documentation = "https://docs.rs/lindera-python"
+homepage = "https://github.com/lindera-morphology/lindera-python"
+repository = "https://github.com/lindera-morphology/lindera-python"
 readme = "README.md"
 keywords = ["morphological", "analysis", "library", "python"]
 categories = ["text-processing"]
 license = "MIT"
 
 [lib]
-name = "lindera_py"
+name = "lindera"
 path = "src/lib.rs"
 crate-type = ["cdylib"]
 

@@ -29,7 +29,7 @@ pub fn version() -> String {
 }
 
 #[pymodule]
-fn lindera_py(module: &Bound<'_, PyModule>) -> PyResult<()> {
+fn lindera(module: &Bound<'_, PyModule>) -> PyResult<()> {
     module.add_class::<PyToken>()?;
     module.add_class::<PyDictionary>()?;
     module.add_class::<PyUserDictionary>()?;

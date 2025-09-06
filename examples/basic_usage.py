@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Basic usage example for lindera-py
+Basic usage example for lindera-python
 Shows how to use the main features of the Japanese morphological analyzer.
 """
 
@@ -10,10 +10,10 @@ def basic_tokenization_example():
     print("=== Basic Tokenization Example ===")
 
     # Import the library
-    import lindera_py
+    import lindera
 
     # Create a tokenizer with default settings
-    builder = lindera_py.TokenizerBuilder()
+    builder = lindera.TokenizerBuilder()
     builder = builder.set_mode("normal")
     builder = builder.set_dictionary("embedded://ipadic")  # or "embedded://unidic", "embedded://ko-dic", "embedded://cc-cedict"
 
@@ -36,17 +36,17 @@ def character_filter_example():
     """Character filter usage example."""
     print("\n=== Character Filter Example ===")
 
-    import lindera_py
+    import lindera
 
     # Create character filters
     # 1. Mapping filter - replace characters
-    mapping_filter = lindera_py.CharacterFilter.mapping({"ー": "-", "！": "!"})
+    mapping_filter = lindera.CharacterFilter.mapping({"ー": "-", "！": "!"})
 
     # 2. Unicode normalization filter
-    unicode_filter = lindera_py.CharacterFilter.unicode_normalize("nfkc")
+    unicode_filter = lindera.CharacterFilter.unicode_normalize("nfkc")
 
     # 3. Japanese iteration mark filter
-    iteration_filter = lindera_py.CharacterFilter.japanese_iteration_mark(normalize_kanji=True, normalize_kana=True)
+    iteration_filter = lindera.CharacterFilter.japanese_iteration_mark(normalize_kanji=True, normalize_kana=True)
 
     # Test text with various characters
     test_texts = [
@@ -65,19 +65,19 @@ def token_filter_example():
     """Token filter usage example."""
     print("\n=== Token Filter Example ===")
 
-    import lindera_py
+    import lindera
 
     # Create basic tokenizer
-    builder = lindera_py.TokenizerBuilder()
+    builder = lindera.TokenizerBuilder()
     tokenizer = builder.set_mode("normal").set_dictionary("embedded://ipadic").build()
 
     # Get some tokens first
     tokens = tokenizer.tokenize("これはテストです")
 
     # Create token filters
-    lowercase_filter = lindera_py.TokenFilter.lowercase()
-    length_filter = lindera_py.TokenFilter.length(min=2, max=10)
-    stop_words_filter = lindera_py.TokenFilter.stop_words(["は", "です"])
+    lowercase_filter = lindera.TokenFilter.lowercase()
+    length_filter = lindera.TokenFilter.length(min=2, max=10)
+    stop_words_filter = lindera.TokenFilter.stop_words(["は", "です"])
 
     print("Original tokens:")
     for token in tokens:
@@ -99,18 +99,18 @@ def integrated_filter_example():
     """Example of using filters with TokenizerBuilder."""
     print("\n=== Integrated Filter Example ===")
 
-    import lindera_py
+    import lindera
 
     # Create a tokenizer with integrated filters
-    builder = lindera_py.TokenizerBuilder()
+    builder = lindera.TokenizerBuilder()
     builder = builder.set_mode("normal").set_dictionary("embedded://ipadic")
 
     # Add character filter
-    char_filter = lindera_py.CharacterFilter.mapping({"ー": "-"})
+    char_filter = lindera.CharacterFilter.mapping({"ー": "-"})
     builder = builder.append_character_filter(char_filter)
 
     # Add token filter
-    token_filter = lindera_py.TokenFilter.lowercase()
+    token_filter = lindera.TokenFilter.lowercase()
     builder = builder.append_token_filter(token_filter)
 
     # Build tokenizer with filters
@@ -130,10 +130,10 @@ def metadata_example():
     """Metadata and schema usage example."""
     print("\n=== Metadata and Schema Example ===")
 
-    import lindera_py
+    import lindera
 
     # Create default metadata
-    metadata = lindera_py.Metadata.default()
+    metadata = lindera.Metadata.default()
 
     print("Default metadata:")
     print(f"  Name: {metadata.name}")
@@ -149,8 +149,8 @@ def metadata_example():
     print("  ...")
 
     # Create custom metadata
-    custom_schema = lindera_py.Schema(["surface", "reading", "pos"])
-    custom_metadata = lindera_py.Metadata(name="custom_dict", encoding="UTF-8", dictionary_schema=custom_schema)
+    custom_schema = lindera.Schema(["surface", "reading", "pos"])
+    custom_metadata = lindera.Metadata(name="custom_dict", encoding="UTF-8", dictionary_schema=custom_schema)
 
     print(f"\nCustom metadata name: {custom_metadata.name}")
     print(f"Custom schema fields: {custom_metadata.dictionary_schema.fields}")
@@ -160,10 +160,10 @@ def advanced_example():
     """Advanced usage combining multiple features."""
     print("\n=== Advanced Usage Example ===")
 
-    import lindera_py
+    import lindera
 
     # Create a sophisticated tokenizer setup
-    builder = lindera_py.TokenizerBuilder()
+    builder = lindera.TokenizerBuilder()
 
     # Configure the segmenter
     builder = builder.set_mode("normal")
@@ -171,11 +171,11 @@ def advanced_example():
 
     # Add multiple character filters
     # 1. Normalize iteration marks
-    iter_filter = lindera_py.CharacterFilter.japanese_iteration_mark(normalize_kanji=True, normalize_kana=True)
+    iter_filter = lindera.CharacterFilter.japanese_iteration_mark(normalize_kanji=True, normalize_kana=True)
     builder = builder.append_character_filter(iter_filter)
 
     # 2. Character mapping
-    mapping_filter = lindera_py.CharacterFilter.mapping(
+    mapping_filter = lindera.CharacterFilter.mapping(
         {
             "！": "!",
             "？": "?",
@@ -186,11 +186,11 @@ def advanced_example():
 
     # Add multiple token filters
     # 1. Length filter (remove very short/long tokens)
-    length_filter = lindera_py.TokenFilter.length(min=2, max=20)
+    length_filter = lindera.TokenFilter.length(min=2, max=20)
     builder = builder.append_token_filter(length_filter)
 
     # 2. Japanese base form filter (if available)
-    base_form_filter = lindera_py.TokenFilter.japanese_base_form()
+    base_form_filter = lindera.TokenFilter.japanese_base_form()
     builder = builder.append_token_filter(base_form_filter)
 
     # Build the tokenizer
@@ -209,7 +209,7 @@ def advanced_example():
 
 def main():
     """Run all examples."""
-    print("Lindera-py Usage Examples")
+    print("Lindera-python Usage Examples")
     print("=" * 50)
 
     try:
@@ -225,7 +225,7 @@ def main():
 
     except Exception as e:
         print(f"\nExample failed with error: {e}")
-        print("Make sure lindera-py is properly installed and compiled.")
+        print("Make sure lindera-python is properly installed and compiled.")
         return 1
 
     return 0
