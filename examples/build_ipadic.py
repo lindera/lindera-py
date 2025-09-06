@@ -11,7 +11,7 @@ def main():
 
     # Add User-Agent header to avoid 403 error
     opener = urllib.request.build_opener()
-    opener.addheaders = [("User-Agent", f"lindera-py/{version()}")]
+    opener.addheaders = [("User-Agent", f"lindera-python/{version()}")]
     urllib.request.install_opener(opener)
 
     # Download dictionary source file

@@ -75,7 +75,7 @@ jobs:
         toolchain: [stable]
         features:
           - value: "cjk"
-            package_name: "lindera-py"
+            package_name: "lindera-python"
             package_description: "Python binding for Lindera with CJK dictionaries (IPADIC, ko-dic, CC-CEDICT)"
     runs-on: ${{ matrix.platform.runner }}
     steps:
@@ -113,7 +113,7 @@ jobs:
         toolchain: [stable]
         features:
           - value: "cjk"
-            package_name: "lindera-py"
+            package_name: "lindera-python"
             package_description: "Python binding for Lindera with CJK dictionaries (IPADIC, ko-dic, CC-CEDICT)"
     runs-on: ${{ matrix.platform.runner }}
     steps:
@@ -151,7 +151,7 @@ jobs:
         toolchain: [stable]
         features:
           - value: "cjk"
-            package_name: "lindera-py"
+            package_name: "lindera-python"
             package_description: "Python binding for Lindera with CJK dictionaries (IPADIC, ko-dic, CC-CEDICT)"
     runs-on: ${{ matrix.platform.runner }}
     steps:
@@ -190,7 +190,7 @@ jobs:
         toolchain: [stable]
         features:
           - value: "cjk"
-            package_name: "lindera-py"
+            package_name: "lindera-python"
             package_description: "Python binding for Lindera with CJK dictionaries (IPADIC, ko-dic, CC-CEDICT)"
     runs-on: ${{ matrix.platform.runner }}
     steps:
@@ -297,12 +297,12 @@ jobs:
           toolchain: ${{ matrix.toolchain }}
           components: rustfmt, clippy
 
-      - name: Publish lindera-py
+      - name: Publish lindera-python
         run: |
-          LINDERA_PY_VERSION=$(cargo metadata --no-deps --format-version=1 | jq -r '.packages[] | select(.name=="lindera-py") | .version')
-          LINDERA_PY_VERSIONS=$(curl -s -XGET https://crates.io/api/v1/crates/lindera-py | jq -r 'select(.versions != null) | .versions[].num')
+          LINDERA_PY_VERSION=$(cargo metadata --no-deps --format-version=1 | jq -r '.packages[] | select(.name=="lindera-python") | .version')
+          LINDERA_PY_VERSIONS=$(curl -s -XGET https://crates.io/api/v1/crates/lindera-python | jq -r 'select(.versions != null) | .versions[].num')
           if echo ${LINDERA_PY_VERSIONS} | grep ${LINDERA_PY_VERSION} >/dev/null; then
-            echo "lindera-py ${LINDERA_PY_VERSION} has already published"
+            echo "lindera-python ${LINDERA_PY_VERSION} has already published"
           else
             cargo publish
           fi

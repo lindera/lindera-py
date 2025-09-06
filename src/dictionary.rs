@@ -1,13 +1,10 @@
-use std::fs;
 use std::path::Path;
 use std::str::FromStr;
 
 use pyo3::{exceptions::PyValueError, prelude::*};
 
 use lindera::dictionary::{
-    Dictionary, DictionaryKind, UserDictionary, load_dictionary_from_kind,
-    load_dictionary_from_path, load_user_dictionary_from_bin, load_user_dictionary_from_csv,
-    resolve_builder, resolve_metadata,
+    Dictionary, DictionaryBuilder, DictionaryKind, Metadata, UserDictionary,
 };
 
 #[pyclass(name = "Dictionary")]
@@ -16,68 +13,128 @@ pub struct PyDictionary {
     pub inner: Dictionary,
 }
 
+#[pymethods]
+impl PyDictionary {
+    pub fn metadata_name(&self) -> String {
+        self.inner.metadata.name.clone()
+    }
+
+    pub fn metadata_encoding(&self) -> String {
+        self.inner.metadata.encoding.clone()
+    }
+
+    fn __str__(&self) -> String {
+        "Dictionary".to_string()
+    }
+
+    fn __repr__(&self) -> String {
+        format!("Dictionary()")
+    }
+}
+
+impl PyDictionary {
+    // Internal helper function to create PyDictionary from Lindera Dictionary
+    pub fn new(dictionary: Dictionary) -> Self {
+        Self { inner: dictionary }
+    }
+}
+
 #[pyclass(name = "UserDictionary")]
 #[derive(Clone)]
 pub struct PyUserDictionary {
     pub inner: UserDictionary,
 }
 
+#[pymethods]
+impl PyUserDictionary {
+    fn __str__(&self) -> String {
+        "UserDictionary".to_string()
+    }
+
+    fn __repr__(&self) -> String {
+        "UserDictionary()".to_string()
+    }
+}
+
+impl PyUserDictionary {
+    // Internal helper function to create PyUserDictionary from Lindera UserDictionary
+    pub fn new(user_dictionary: UserDictionary) -> Self {
+        Self {
+            inner: user_dictionary,
+        }
+    }
+}
+
 #[pyfunction]
-#[pyo3(signature = (kind, input_dir, output_dir))]
-pub fn build_dictionary(kind: &str, input_dir: &str, output_dir: &str) -> PyResult<()> {
-    let dict_kind =
-        DictionaryKind::from_str(kind).map_err(|_err| PyValueError::new_err("Invalid kind"))?;
+#[pyo3(signature = (_kind, input_dir, output_dir, metadata=None))]
+pub fn build_dictionary(
+    _kind: &str,
+    input_dir: &str,
+    output_dir: &str,
+    metadata: Option<crate::metadata::PyMetadata>,
+) -> PyResult<()> {
+    let input_path = Path::new(input_dir);
+    let output_path = Path::new(output_dir);
 
-    let metadata = resolve_metadata(dict_kind.clone())
-        .map_err(|err| PyValueError::new_err(format!("Failed to resolve metadata: {err}")))?;
+    if !input_path.exists() {
+        return Err(PyValueError::new_err(format!(
+            "Input directory does not exist: {}",
+            input_dir
+        )));
+    }
 
-    let builder = resolve_builder(dict_kind)
-        .map_err(|err| PyValueError::new_err(format!("Failed to resolve builder: {err}")))?;
+    // Use provided metadata or create default
+    let meta = match metadata {
+        Some(py_metadata) => {
+            // Convert PyMetadata to Lindera Metadata
+            let lindera_meta: Metadata = py_metadata.into();
+            lindera_meta
+        }
+        None => Metadata::default(),
+    };
 
-    // Ensure output directory exists
-    fs::create_dir_all(output_dir).map_err(|err| {
-        PyValueError::new_err(format!("Failed to create output directory: {err}"))
-    })?;
+    let builder = DictionaryBuilder::new(meta);
 
     builder
-        .build_dictionary(&metadata, Path::new(input_dir), Path::new(output_dir))
-        .map_err(|err| PyValueError::new_err(format!("Failed to build dictionary: {err}")))?;
+        .build_dictionary(input_path, output_path)
+        .map_err(|e| PyValueError::new_err(format!("Failed to build dictionary: {}", e)))?;
 
     Ok(())
 }
 
 #[pyfunction]
-#[pyo3(signature = (kind, input_file, output_dir))]
-pub fn build_user_dictionary(kind: &str, input_file: &str, output_dir: &str) -> PyResult<()> {
-    let dict_kind =
-        DictionaryKind::from_str(kind).map_err(|_err| PyValueError::new_err("Invalid kind"))?;
+#[pyo3(signature = (_kind, input_file, output_dir, metadata=None))]
+pub fn build_user_dictionary(
+    _kind: &str,
+    input_file: &str,
+    output_dir: &str,
+    metadata: Option<crate::metadata::PyMetadata>,
+) -> PyResult<()> {
+    let input_path = Path::new(input_file);
+    let output_path = Path::new(output_dir);
 
-    let metadata = resolve_metadata(dict_kind.clone())
-        .map_err(|err| PyValueError::new_err(format!("Failed to resolve metadata: {err}")))?;
+    if !input_path.exists() {
+        return Err(PyValueError::new_err(format!(
+            "Input file does not exist: {}",
+            input_file
+        )));
+    }
 
-    let builder = resolve_builder(dict_kind)
-        .map_err(|err| PyValueError::new_err(format!("Failed to resolve builder: {err}")))?;
-
-    // Ensure output directory exists
-    fs::create_dir_all(output_dir).map_err(|err| {
-        PyValueError::new_err(format!("Failed to create output directory: {err}"))
-    })?;
-
-    // Determine output file name based on input file
-    // If the input file has no name, we cannot determine the output file name.
-    // In that case, we return an error.
-    // e.g., /path/to/input/file.txt -> /path/to/output/file.bin
-    let output_file = if let Some(filename) = Path::new(input_file).file_name() {
-        let mut output_file = Path::new(output_dir).join(filename);
-        output_file.set_extension("bin");
-        output_file
-    } else {
-        return Err(PyValueError::new_err("Failed to determine output filename"));
+    // Use provided metadata or create default
+    let meta = match metadata {
+        Some(py_metadata) => {
+            let lindera_meta: Metadata = py_metadata.into();
+            lindera_meta
+        }
+        None => Metadata::default(),
     };
 
+    let builder = DictionaryBuilder::new(meta);
+
+    // Build user dictionary from CSV
     builder
-        .build_user_dictionary(&metadata, Path::new(input_file), output_file.as_path())
-        .map_err(|err| PyValueError::new_err(format!("Failed to build user dictionary: {err}")))?;
+        .build_user_dictionary(input_path, output_path)
+        .map_err(|e| PyValueError::new_err(format!("Failed to build user dictionary: {}", e)))?;
 
     Ok(())
 }
@@ -86,68 +143,90 @@ pub fn build_user_dictionary(kind: &str, input_file: &str, output_dir: &str) -> 
 #[pyo3(signature = (kind=None, path=None))]
 pub fn load_dictionary(kind: Option<&str>, path: Option<&str>) -> PyResult<PyDictionary> {
     match (kind, path) {
+        // Load embedded dictionary by kind
         (Some(kind_str), None) => {
-            let k = DictionaryKind::from_str(kind_str)
-                .map_err(|_err| PyValueError::new_err("Invalid kind"))?;
-            let dictionary = load_dictionary_from_kind(k).map_err(|err| {
-                PyValueError::new_err(format!("Failed to load dictionary: {err}"))
+            let dict_kind = DictionaryKind::from_str(kind_str).map_err(|e| {
+                PyValueError::new_err(format!("Invalid dictionary kind '{}': {}", kind_str, e))
             })?;
 
-            Ok(PyDictionary { inner: dictionary })
+            let dictionary =
+                lindera::dictionary::load_embedded_dictionary(dict_kind).map_err(|e| {
+                    PyValueError::new_err(format!("Failed to load embedded dictionary: {}", e))
+                })?;
+
+            Ok(PyDictionary::new(dictionary))
         }
-        (None, Some(path_str)) => {
-            let p = Path::new(path_str);
-            let dictionary = load_dictionary_from_path(p).map_err(|err| {
-                PyValueError::new_err(format!("Failed to load dictionary: {err}"))
+
+        // Load dictionary from file path
+        (_, Some(path_str)) => {
+            let dictionary = lindera::dictionary::load_dictionary(path_str).map_err(|e| {
+                PyValueError::new_err(format!(
+                    "Failed to load dictionary from '{}': {}",
+                    path_str, e
+                ))
             })?;
 
-            Ok(PyDictionary { inner: dictionary })
+            Ok(PyDictionary::new(dictionary))
         }
-        _ => Err(PyValueError::new_err("Invalid arguments")),
+
+        // Load default embedded dictionary (IPADIC)
+        (None, None) => {
+            #[cfg(feature = "embedded-ipadic")]
+            {
+                let dictionary = lindera::dictionary::load_embedded_dictionary(
+                    DictionaryKind::IPADIC,
+                )
+                .map_err(|e| {
+                    PyValueError::new_err(format!("Failed to load default dictionary: {}", e))
+                })?;
+                Ok(PyDictionary::new(dictionary))
+            }
+
+            #[cfg(not(feature = "embedded-ipadic"))]
+            {
+                Err(PyValueError::new_err(
+                    "No dictionary kind or path specified, and no default embedded dictionary available",
+                ))
+            }
+        }
     }
 }
 
 #[pyfunction]
-#[pyo3(signature = (path, kind=None))]
-pub fn load_user_dictionary(path: &str, kind: Option<&str>) -> PyResult<PyUserDictionary> {
-    let p = Path::new(path);
-    let ext = p
-        .extension()
-        .and_then(|ext| ext.to_str())
-        .ok_or_else(|| PyValueError::new_err("Invalid file path"))?;
-    match ext {
-        "csv" => match kind {
-            Some(kind) => {
-                let k = DictionaryKind::from_str(kind)
-                    .map_err(|_err| PyValueError::new_err("Invalid kind"))?;
-                let user_dictionary = load_user_dictionary_from_csv(k, p).map_err(|err| {
-                    PyValueError::new_err(format!("Failed to load user dictionary: {err}"))
-                })?;
+#[pyo3(signature = (path, metadata=None))]
+pub fn load_user_dictionary(
+    path: &str,
+    metadata: Option<crate::metadata::PyMetadata>,
+) -> PyResult<PyUserDictionary> {
+    let user_dict_path = Path::new(path);
 
-                Ok(PyUserDictionary {
-                    inner: user_dictionary,
-                })
-            }
-            None => Err(PyValueError::new_err(
-                "Dictionary type must be specified if CSV file specified",
-            )),
-        },
-        "bin" => match kind {
-            Some(_kind) => Err(PyValueError::new_err(
-                "Dictionary type must be None if Binary file specified",
-            )),
-            None => {
-                let user_dictionary = load_user_dictionary_from_bin(p).map_err(|err| {
-                    PyValueError::new_err(format!("Failed to load user dictionary: {err}"))
-                })?;
-
-                Ok(PyUserDictionary {
-                    inner: user_dictionary,
-                })
-            }
-        },
-        _ => Err(PyValueError::new_err(format!(
-            "Unsupported file: path:{path}, kind:{kind:?}"
-        ))),
+    if !user_dict_path.exists() {
+        return Err(PyValueError::new_err(format!(
+            "User dictionary file does not exist: {}",
+            path
+        )));
     }
+
+    // Use provided metadata or create default
+    let meta = match metadata {
+        Some(py_metadata) => {
+            let lindera_meta: Metadata = py_metadata.into();
+            lindera_meta
+        }
+        None => Metadata::default(),
+    };
+
+    let user_dictionary = if path.ends_with(".csv") {
+        // Load from CSV file
+        lindera::dictionary::load_user_dictionary_from_csv(&meta, user_dict_path).map_err(|e| {
+            PyValueError::new_err(format!("Failed to load user dictionary from CSV: {}", e))
+        })?
+    } else {
+        // Load from binary file
+        lindera::dictionary::load_user_dictionary_from_bin(user_dict_path).map_err(|e| {
+            PyValueError::new_err(format!("Failed to load user dictionary from binary: {}", e))
+        })?
+    };
+
+    Ok(PyUserDictionary::new(user_dictionary))
 }
