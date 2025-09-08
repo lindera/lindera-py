@@ -1,7 +1,8 @@
+import os
 import tarfile
 import urllib.request
 
-from lindera import Segmenter, Tokenizer, build_dictionary, load_dictionary, version
+from lindera import Metadata, build_dictionary, version
 
 
 def main():
@@ -23,27 +24,22 @@ def main():
 
     source_path = "/tmp/mecab-ipadic-2.7.0-20070801"
     destination_path = "/tmp/lindera-ipadic-2.7.0-20070801"
+    metadata_path = "./resources/ipadic_metadata.json"
+
+    metadata = Metadata.from_json_file(metadata_path)
 
     # Build dictionary
-    build_dictionary("ipadic", source_path, destination_path)
+    build_dictionary(source_path, destination_path, metadata)
 
-    # Load the built dictionary
-    dictionary = load_dictionary(path=destination_path)
-
-    # create a segmenter
-    segmenter = Segmenter("normal", dictionary)
-
-    # create a tokenizer
-    tokenizer = Tokenizer(segmenter)
-
-    text = "関西国際空港限定トートバッグを東京スカイツリーの最寄り駅であるとうきょうスカイツリー駅で買う"
-    print(f"text: {text}\n")
-
-    # tokenize the text
-    tokens = tokenizer.tokenize(text)
-
-    for token in tokens:
-        print(token.text)
+    # List all files in the destination directory
+    print(f"\nFiles created in {destination_path}:")
+    for root, dirs, files in os.walk(destination_path):
+        for file in files:
+            file_path = os.path.join(root, file)
+            rel_path = os.path.relpath(file_path, destination_path)
+            file_size = os.path.getsize(file_path)
+            print(f"  {rel_path} ({file_size:,} bytes)")
+    print()
 
 
 if __name__ == "__main__":

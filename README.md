@@ -92,11 +92,12 @@ This command takes a long time because it builds a library that includes all the
 ### Basic Tokenization
 
 ```python
-import lindera_py
+from lindera import TokenizerBuilder
 
 # Create a tokenizer with default settings
-builder = lindera_py.TokenizerBuilder()
-builder = builder.set_mode("normal").set_dictionary_kind("ipadic")
+builder = TokenizerBuilder()
+builder.set_mode("normal")
+builder.set_dictionary("embedded://ipadic")
 tokenizer = builder.build()
 
 # Tokenize Japanese text
@@ -110,48 +111,60 @@ for token in tokens:
 ### Using Character Filters
 
 ```python
-import lindera_py
+from lindera import TokenizerBuilder
 
-# Create character filters
-mapping_filter = lindera_py.CharacterFilter.mapping({"ー": "-"})
-unicode_filter = lindera_py.CharacterFilter.unicode_normalize("nfkc")
+# Create tokenizer builder
+builder = TokenizerBuilder()
+builder.set_mode("normal")
+builder.set_dictionary("embedded://ipadic")
 
-# Apply filters
-text = "テストー"
-filtered_text = mapping_filter.apply(text)  # "テスト-"
-normalized_text = unicode_filter.apply("１２３")  # "123"
+# Add character filters
+builder.append_character_filter("mapping", {"mapping": {"ー": "-"}})
+builder.append_character_filter("unicode_normalize", {"kind": "nfkc"})
+
+# Build tokenizer with filters
+tokenizer = builder.build()
+text = "テストー１２３"
+tokens = tokenizer.tokenize(text)  # Will apply filters automatically
 ```
 
 ### Using Token Filters
 
 ```python
-import lindera_py
+from lindera import TokenizerBuilder
 
-# Create token filters
-lowercase_filter = lindera_py.TokenFilter.lowercase()
-length_filter = lindera_py.TokenFilter.length(min=2, max=10)
-stop_words_filter = lindera_py.TokenFilter.stop_words(["は", "です"])
+# Create tokenizer builder
+builder = TokenizerBuilder()
+builder.set_mode("normal")
+builder.set_dictionary("embedded://ipadic")
 
-# Apply to tokens (from tokenization)
-filtered_tokens = lowercase_filter.apply(tokens)
+# Add token filters
+builder.append_token_filter("lowercase")
+builder.append_token_filter("length", {"min": 2, "max": 10})
+builder.append_token_filter("japanese_stop_tags", {"tags": ["助詞", "助動詞"]})
+
+# Build tokenizer with filters
+tokenizer = builder.build()
+tokens = tokenizer.tokenize("テキストの解析")
 ```
 
 ### Integrated Pipeline
 
 ```python
-import lindera_py
+from lindera import TokenizerBuilder
 
 # Build tokenizer with integrated filters
-builder = lindera_py.TokenizerBuilder()
-builder = builder.set_mode("normal").set_dictionary_kind("ipadic")
+builder = TokenizerBuilder()
+builder.set_mode("normal")
+builder.set_dictionary("embedded://ipadic")
 
-# Add character filter
-char_filter = lindera_py.CharacterFilter.mapping({"ー": "-"})
-builder = builder.append_character_filter(char_filter)
+# Add character filters
+builder.append_character_filter("mapping", {"mapping": {"ー": "-"}})
+builder.append_character_filter("unicode_normalize", {"kind": "nfkc"})
 
-# Add token filter  
-token_filter = lindera_py.TokenFilter.lowercase()
-builder = builder.append_token_filter(token_filter)
+# Add token filters  
+builder.append_token_filter("lowercase")
+builder.append_token_filter("japanese_base_form")
 
 # Build and use
 tokenizer = builder.build()
@@ -161,27 +174,62 @@ tokens = tokenizer.tokenize("コーヒーショップ")
 ### Working with Metadata
 
 ```python
-import lindera_py
+from lindera import Metadata
 
-# Get default metadata
-metadata = lindera_py.Metadata.default()
-print(f"Dictionary: {metadata.name}")
-print(f"Encoding: {metadata.encoding}")
+# Get metadata for a specific dictionary
+metadata = Metadata.load("embedded://ipadic")
+print(f"Dictionary: {metadata.dictionary_name}")
+print(f"Version: {metadata.dictionary_version}")
 
 # Access schema information
 schema = metadata.dictionary_schema
-print(f"Schema has {schema.field_count()} fields")
+print(f"Schema has {len(schema.fields)} fields")
 print(f"Fields: {schema.fields[:5]}")  # First 5 fields
 ```
 
 ## Advanced Usage
 
-See `examples/basic_usage.py` for comprehensive examples including:
+### Filter Configuration Examples
 
+Character filters and token filters accept configuration as dictionary arguments:
+
+```python
+from lindera import TokenizerBuilder
+
+builder = TokenizerBuilder()
+builder.set_dictionary("embedded://ipadic")
+
+# Character filters with dict configuration
+builder.append_character_filter("unicode_normalize", {"kind": "nfkc"})
+builder.append_character_filter("japanese_iteration_mark", {
+    "normalize_kanji": "true",
+    "normalize_kana": "true"
+})
+builder.append_character_filter("mapping", {
+    "mapping": {"リンデラ": "lindera", "トウキョウ": "東京"}
+})
+
+# Token filters with dict configuration  
+builder.append_token_filter("japanese_katakana_stem", {"min": 3})
+builder.append_token_filter("length", {"min": 2, "max": 10})
+builder.append_token_filter("japanese_stop_tags", {
+    "tags": ["助詞", "助動詞", "記号"]
+})
+
+# Filters without configuration can omit the dict
+builder.append_token_filter("lowercase")
+builder.append_token_filter("japanese_base_form")
+
+tokenizer = builder.build()
+```
+
+See `examples/` directory for comprehensive examples including:
+
+- `tokenize.py`: Basic tokenization
+- `tokenize_with_filters.py`: Using character and token filters
+- `tokenize_with_userdict.py`: Custom user dictionary
 - Multi-language tokenization
-- Custom filter chains
 - Advanced configuration options
-- Error handling patterns
 
 ## Dictionary Support
 

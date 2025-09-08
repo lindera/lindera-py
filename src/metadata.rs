@@ -1,5 +1,6 @@
-use pyo3::prelude::*;
 use std::collections::HashMap;
+
+use pyo3::prelude::*;
 
 use lindera::dictionary::{CompressionAlgorithm, Metadata};
 
@@ -115,6 +116,21 @@ impl PyMetadata {
         PyMetadata::new(
             None, None, None, None, None, None, None, None, None, None, None, None,
         )
+    }
+
+    #[staticmethod]
+    pub fn from_json_file(path: &str) -> PyResult<Self> {
+        use std::fs;
+
+        let json_str = fs::read_to_string(path).map_err(|e| {
+            pyo3::exceptions::PyIOError::new_err(format!("Failed to read file: {e}"))
+        })?;
+
+        let metadata: Metadata = serde_json::from_str(&json_str).map_err(|e| {
+            pyo3::exceptions::PyValueError::new_err(format!("Failed to parse JSON: {e}"))
+        })?;
+
+        Ok(metadata.into())
     }
 
     #[getter]

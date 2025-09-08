@@ -1,26 +1,24 @@
-from lindera import Segmenter, Tokenizer, load_dictionary
+from lindera import TokenizerBuilder
 
 
 def main():
-    # load the dictionary
-    dictionary = load_dictionary("ipadic")
+    # create a tokenizer builder
+    builder = TokenizerBuilder()
 
-    # create a segmenter
-    segmenter = Segmenter("normal", dictionary)
-
-    # create a tokenizer
-    tokenizer = Tokenizer(segmenter)
+    # set mode and dictionary
+    builder.set_mode("normal")
+    builder.set_dictionary("embedded://ipadic")
 
     # append character filters
-    tokenizer.append_character_filter("unicode_normalize", **{"kind": "nfkc"})
-    tokenizer.append_character_filter("japanese_iteration_mark", **{"normalize_kanji": True, "normalize_kana": True})
-    tokenizer.append_character_filter("mapping", **{"mapping": {"リンデラ": "lindera"}})
+    builder.append_character_filter("unicode_normalize", {"kind": "nfkc"})
+    builder.append_character_filter("japanese_iteration_mark", {"normalize_kanji": "true", "normalize_kana": "true"})
+    builder.append_character_filter("mapping", {"mapping": {"リンデラ": "lindera"}})
 
     # append token filters
-    tokenizer.append_token_filter("japanese_katakana_stem", **{"min": 3})
-    tokenizer.append_token_filter(
+    builder.append_token_filter("japanese_katakana_stem", {"min": 3})
+    builder.append_token_filter(
         "japanese_stop_tags",
-        **{
+        {
             "tags": [
                 "接続詞",
                 "助詞",
@@ -50,7 +48,11 @@ def main():
             ]
         },
     )
-    tokenizer.append_token_filter("lowercase")
+    builder.append_token_filter("lowercase")
+    builder.append_token_filter("japanese_base_form")
+
+    # build the tokenizer
+    tokenizer = builder.build()
 
     text = "Ｌｉｎｄｅｒａは形態素解析ｴﾝｼﾞﾝです。ユーザー辞書も利用可能で、様々なフィルターも内包しています。Linderaはリンデラと読みます。"
     print(f"text: {text}\n")

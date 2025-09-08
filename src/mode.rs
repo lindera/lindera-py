@@ -1,5 +1,6 @@
-use lindera::mode::{Mode as LinderaMode, Penalty as LinderaPenalty};
 use pyo3::prelude::*;
+
+use lindera::mode::{Mode as LinderaMode, Penalty as LinderaPenalty};
 
 #[pyclass(name = "Mode")]
 #[derive(Debug, Clone, Copy)]

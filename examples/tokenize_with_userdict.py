@@ -7,11 +7,13 @@ project_root = Path(__file__).resolve().parent.parent
 
 def main():
     # load the dictionary
-    dictionary = load_dictionary("ipadic")
+    dictionary = load_dictionary("embedded://ipadic")
+
+    metadata = dictionary.metadata()
 
     # load the user dictionary
     user_dictionary_path = str(project_root / Path("./resources/ipadic_simple_userdic.csv"))
-    user_dictionary = load_user_dictionary(user_dictionary_path, "ipadic")
+    user_dictionary = load_user_dictionary(user_dictionary_path, metadata)
 
     # create a segmenter
     segmenter = Segmenter("normal", dictionary, user_dictionary)

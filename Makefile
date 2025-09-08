@@ -47,6 +47,11 @@ test: ## Test the project
 run-examples: ## Run examples
 	poetry run maturin develop --features=embedded-ipadic
 	poetry run python ./examples/basic_usage.py
+	poetry run python ./examples/build_ipadic.py
+	poetry run python ./examples/tokenize.py
+	poetry run python ./examples/tokenize_with_userdict.py
+	poetry run python ./examples/tokenize_with_decompose.py
+	poetry run python ./examples/tokenize_with_filters.py
 
 publish: ## Publish package to crates.io
 ifeq ($(shell curl -s -XGET -H "User-Agent: $(USER_AGENT) ($(USER)@$(HOSTNAME))" https://crates.io/api/v1/crates/lindera-python | jq -r '.versions[].num' | grep $(LINDERA_PYTHON_VERSION)),)

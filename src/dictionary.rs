@@ -26,6 +26,10 @@ impl PyDictionary {
         self.inner.metadata.encoding.clone()
     }
 
+    pub fn metadata(&self) -> PyMetadata {
+        PyMetadata::from(self.inner.metadata.clone())
+    }
+
     fn __str__(&self) -> String {
         "Dictionary".to_string()
     }
@@ -69,13 +73,8 @@ impl PyUserDictionary {
 }
 
 #[pyfunction]
-#[pyo3(signature = (_kind, input_dir, output_dir, metadata=None))]
-pub fn build_dictionary(
-    _kind: &str,
-    input_dir: &str,
-    output_dir: &str,
-    metadata: Option<crate::metadata::PyMetadata>,
-) -> PyResult<()> {
+#[pyo3(signature = (input_dir, output_dir, metadata))]
+pub fn build_dictionary(input_dir: &str, output_dir: &str, metadata: PyMetadata) -> PyResult<()> {
     let input_path = Path::new(input_dir);
     let output_path = Path::new(output_dir);
 
@@ -85,17 +84,7 @@ pub fn build_dictionary(
         )));
     }
 
-    // Use provided metadata or create default
-    let meta = match metadata {
-        Some(py_metadata) => {
-            // Convert PyMetadata to Lindera Metadata
-            let lindera_meta: Metadata = py_metadata.into();
-            lindera_meta
-        }
-        None => Metadata::default(),
-    };
-
-    let builder = DictionaryBuilder::new(meta);
+    let builder = DictionaryBuilder::new(metadata.into());
 
     builder
         .build_dictionary(input_path, output_path)
