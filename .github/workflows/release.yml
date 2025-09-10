@@ -74,6 +74,9 @@ jobs:
             target: x86_64
         toolchain: [stable]
         features:
+          - value: "default"
+            package_name: "lindera-python"
+            package_description: "Python binding for Lindera (no embedded dictionaries)"
           - value: "embedded-cjk"
             package_name: "lindera-python-cjk"
             package_description: "Python binding for Lindera with CJK dictionaries (IPADIC, ko-dic, CC-CEDICT)"
@@ -124,6 +127,9 @@ jobs:
             target: aarch64
         toolchain: [stable]
         features:
+          - value: "default"
+            package_name: "lindera-python"
+            package_description: "Python binding for Lindera (no embedded dictionaries)"
           - value: "embedded-cjk"
             package_name: "lindera-python-cjk"
             package_description: "Python binding for Lindera with CJK dictionaries (IPADIC, ko-dic, CC-CEDICT)"
@@ -174,6 +180,9 @@ jobs:
             target: x64
         toolchain: [stable]
         features:
+          - value: "default"
+            package_name: "lindera-python"
+            package_description: "Python binding for Lindera (no embedded dictionaries)"
           - value: "embedded-cjk"
             package_name: "lindera-python-cjk"
             package_description: "Python binding for Lindera with CJK dictionaries (IPADIC, ko-dic, CC-CEDICT)"
@@ -225,6 +234,9 @@ jobs:
             target: aarch64
         toolchain: [stable]
         features:
+          - value: "default"
+            package_name: "lindera-python"
+            package_description: "Python binding for Lindera (no embedded dictionaries)"
           - value: "embedded-cjk"
             package_name: "lindera-python-cjk"
             package_description: "Python binding for Lindera with CJK dictionaries (IPADIC, ko-dic, CC-CEDICT)"
