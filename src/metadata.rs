@@ -1,5 +1,6 @@
-use pyo3::prelude::*;
 use std::collections::HashMap;
+
+use pyo3::prelude::*;
 
 use lindera::dictionary::{CompressionAlgorithm, Metadata};
 
@@ -26,7 +27,7 @@ impl PyCompressionAlgorithm {
     }
 
     fn __repr__(&self) -> String {
-        format!("CompressionAlgorithm.{:?}", self)
+        format!("CompressionAlgorithm.{self:?}")
     }
 }
 
@@ -73,6 +74,7 @@ pub struct PyMetadata {
 impl PyMetadata {
     #[new]
     #[pyo3(signature = (name=None, encoding=None, compress_algorithm=None, default_word_cost=None, default_left_context_id=None, default_right_context_id=None, default_field_value=None, flexible_csv=None, skip_invalid_cost_or_id=None, normalize_details=None, dictionary_schema=None, user_dictionary_schema=None))]
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
         name: Option<String>,
         encoding: Option<String>,
@@ -98,7 +100,7 @@ impl PyMetadata {
             flexible_csv: flexible_csv.unwrap_or(false),
             skip_invalid_cost_or_id: skip_invalid_cost_or_id.unwrap_or(false),
             normalize_details: normalize_details.unwrap_or(false),
-            dictionary_schema: dictionary_schema.unwrap_or_else(|| PySchema::default()),
+            dictionary_schema: dictionary_schema.unwrap_or_else(PySchema::create_default),
             user_dictionary_schema: user_dictionary_schema.unwrap_or_else(|| {
                 PySchema::new(vec![
                     "surface".to_string(),
@@ -110,10 +112,25 @@ impl PyMetadata {
     }
 
     #[staticmethod]
-    pub fn default() -> Self {
+    pub fn create_default() -> Self {
         PyMetadata::new(
             None, None, None, None, None, None, None, None, None, None, None, None,
         )
+    }
+
+    #[staticmethod]
+    pub fn from_json_file(path: &str) -> PyResult<Self> {
+        use std::fs;
+
+        let json_str = fs::read_to_string(path).map_err(|e| {
+            pyo3::exceptions::PyIOError::new_err(format!("Failed to read file: {e}"))
+        })?;
+
+        let metadata: Metadata = serde_json::from_str(&json_str).map_err(|e| {
+            pyo3::exceptions::PyValueError::new_err(format!("Failed to parse JSON: {e}"))
+        })?;
+
+        Ok(metadata.into())
     }
 
     #[getter]

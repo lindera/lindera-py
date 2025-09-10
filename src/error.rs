@@ -1,6 +1,7 @@
+use std::fmt;
+
 use pyo3::exceptions::PyException;
 use pyo3::prelude::*;
-use std::fmt;
 
 #[pyclass(name = "LinderaError")]
 #[derive(Debug, Clone)]

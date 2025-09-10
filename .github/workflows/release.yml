@@ -74,9 +74,24 @@ jobs:
             target: x86_64
         toolchain: [stable]
         features:
-          - value: "cjk"
+          - value: "default"
             package_name: "lindera-python"
+            package_description: "Python binding for Lindera (no embedded dictionaries)"
+          - value: "embedded-cjk"
+            package_name: "lindera-python-cjk"
             package_description: "Python binding for Lindera with CJK dictionaries (IPADIC, ko-dic, CC-CEDICT)"
+          - value: "embedded-ipadic"
+            package_name: "lindera-python-ipadic"
+            package_description: "Python binding for Lindera with IPADIC dictionary"
+          - value: "embedded-unidic"
+            package_name: "lindera-python-unidic"
+            package_description: "Python binding for Lindera with UniDic dictionary"
+          - value: "embedded-ko-dic"
+            package_name: "lindera-python-ko-dic"
+            package_description: "Python binding for Lindera with ko-dic Korean dictionary"
+          - value: "embedded-cc-cedict"
+            package_name: "lindera-python-cc-cedict"
+            package_description: "Python binding for Lindera with CC-CEDICT Chinese dictionary"
     runs-on: ${{ matrix.platform.runner }}
     steps:
       - name: Run checkout
@@ -91,7 +106,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist --find-interpreter --features=${{ matrix.features.value }} #--manifest-path pyproject-${{ matrix.features.value }}.toml
+          args: --release --out dist --find-interpreter --features=${{ matrix.features.value }}
           sccache: "false"
           manylinux: auto
           before-script-linux: "yum install openssl-devel devtoolset-10-libatomic-devel perl-IPC-Cmd -y"
@@ -112,9 +127,24 @@ jobs:
             target: aarch64
         toolchain: [stable]
         features:
-          - value: "cjk"
+          - value: "default"
             package_name: "lindera-python"
+            package_description: "Python binding for Lindera (no embedded dictionaries)"
+          - value: "embedded-cjk"
+            package_name: "lindera-python-cjk"
             package_description: "Python binding for Lindera with CJK dictionaries (IPADIC, ko-dic, CC-CEDICT)"
+          - value: "embedded-ipadic"
+            package_name: "lindera-python-ipadic"
+            package_description: "Python binding for Lindera with IPADIC dictionary"
+          - value: "embedded-unidic"
+            package_name: "lindera-python-unidic"
+            package_description: "Python binding for Lindera with UniDic dictionary"
+          - value: "embedded-ko-dic"
+            package_name: "lindera-python-ko-dic"
+            package_description: "Python binding for Lindera with ko-dic Korean dictionary"
+          - value: "embedded-cc-cedict"
+            package_name: "lindera-python-cc-cedict"
+            package_description: "Python binding for Lindera with CC-CEDICT Chinese dictionary"
     runs-on: ${{ matrix.platform.runner }}
     steps:
       - name: Run checkout
@@ -129,7 +159,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist --find-interpreter --features=${{ matrix.features.value }} #--manifest-path pyproject-${{ matrix.features.value }}.toml
+          args: --release --out dist --find-interpreter --features=${{ matrix.features.value }}
           sccache: "false"
           manylinux: auto
           before-script-linux: "apt-get update && apt-get install libssl-dev pkg-config -y"
@@ -150,9 +180,24 @@ jobs:
             target: x64
         toolchain: [stable]
         features:
-          - value: "cjk"
+          - value: "default"
             package_name: "lindera-python"
+            package_description: "Python binding for Lindera (no embedded dictionaries)"
+          - value: "embedded-cjk"
+            package_name: "lindera-python-cjk"
             package_description: "Python binding for Lindera with CJK dictionaries (IPADIC, ko-dic, CC-CEDICT)"
+          - value: "embedded-ipadic"
+            package_name: "lindera-python-ipadic"
+            package_description: "Python binding for Lindera with IPADIC dictionary"
+          - value: "embedded-unidic"
+            package_name: "lindera-python-unidic"
+            package_description: "Python binding for Lindera with UniDic dictionary"
+          - value: "embedded-ko-dic"
+            package_name: "lindera-python-ko-dic"
+            package_description: "Python binding for Lindera with ko-dic Korean dictionary"
+          - value: "embedded-cc-cedict"
+            package_name: "lindera-python-cc-cedict"
+            package_description: "Python binding for Lindera with CC-CEDICT Chinese dictionary"
     runs-on: ${{ matrix.platform.runner }}
     steps:
       - name: Run checkout
@@ -168,7 +213,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist --find-interpreter --features=${{ matrix.features.value }} #--manifest-path pyproject-${{ matrix.features.value }}.toml
+          args: --release --out dist --find-interpreter --features=${{ matrix.features.value }}
           sccache: "false"
 
       - name: Upload wheels
@@ -189,9 +234,24 @@ jobs:
             target: aarch64
         toolchain: [stable]
         features:
-          - value: "cjk"
+          - value: "default"
             package_name: "lindera-python"
+            package_description: "Python binding for Lindera (no embedded dictionaries)"
+          - value: "embedded-cjk"
+            package_name: "lindera-python-cjk"
             package_description: "Python binding for Lindera with CJK dictionaries (IPADIC, ko-dic, CC-CEDICT)"
+          - value: "embedded-ipadic"
+            package_name: "lindera-python-ipadic"
+            package_description: "Python binding for Lindera with IPADIC dictionary"
+          - value: "embedded-unidic"
+            package_name: "lindera-python-unidic"
+            package_description: "Python binding for Lindera with UniDic dictionary"
+          - value: "embedded-ko-dic"
+            package_name: "lindera-python-ko-dic"
+            package_description: "Python binding for Lindera with ko-dic Korean dictionary"
+          - value: "embedded-cc-cedict"
+            package_name: "lindera-python-cc-cedict"
+            package_description: "Python binding for Lindera with CC-CEDICT Chinese dictionary"
     runs-on: ${{ matrix.platform.runner }}
     steps:
       - name: Run checkout
@@ -206,7 +266,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist --find-interpreter --features=${{ matrix.features.value }} #--manifest-path pyproject-${{ matrix.features.value }}.toml
+          args: --release --out dist --find-interpreter --features=${{ matrix.features.value }}
           sccache: "false"
 
       - name: Upload wheels
@@ -234,7 +294,7 @@ jobs:
           path: dist
 
   release:
-    name: Release
+    name: GitHub Release
     # needs: [linux, linux2, musllinux, windows, macos, sdist]
     needs: [linux, linux2, windows, macos, sdist]
     runs-on: ubuntu-latest
@@ -255,15 +315,6 @@ jobs:
         with:
           subject-path: "wheels-*/*"
 
-      - name: Publish to PyPI
-        if: ${{ startsWith(github.ref, 'refs/tags/') }}
-        uses: PyO3/maturin-action@v1
-        env:
-          MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
-        with:
-          command: upload
-          args: --non-interactive --skip-existing wheels-*/*
-
       - name: Create GitHub Release
         id: create_release
         uses: softprops/action-gh-release@v2
@@ -277,8 +328,27 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  publish-pypi:
+    name: Publish to PyPI
+    needs: [linux, linux2, windows, macos, sdist]
+    runs-on: ubuntu-latest
+    if: ${{ startsWith(github.ref, 'refs/tags/') }}
+    permissions:
+      id-token: write
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Publish to PyPI
+        uses: PyO3/maturin-action@v1
+        env:
+          MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        with:
+          command: upload
+          args: --non-interactive --skip-existing wheels-*/*
+
   publish-crates:
-    name: Publish crate
+    name: Publish to crates.io
     needs: [release]
     strategy:
       matrix:

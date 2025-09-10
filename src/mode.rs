@@ -1,5 +1,6 @@
-use lindera::mode::{Mode as LinderaMode, Penalty as LinderaPenalty};
 use pyo3::prelude::*;
+
+use lindera::mode::{Mode as LinderaMode, Penalty as LinderaPenalty};
 
 #[pyclass(name = "Mode")]
 #[derive(Debug, Clone, Copy)]
@@ -17,8 +18,7 @@ impl PyMode {
             Some("decompose") | Some("Decompose") => Ok(PyMode::Decompose),
             Some("normal") | Some("Normal") | None => Ok(PyMode::Normal),
             Some(s) => Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
-                "Invalid mode: {}. Must be 'normal' or 'decompose'",
-                s
+                "Invalid mode: {s}. Must be 'normal' or 'decompose'"
             ))),
         }
     }
@@ -31,7 +31,7 @@ impl PyMode {
     }
 
     fn __repr__(&self) -> String {
-        format!("Mode.{:?}", self)
+        format!("Mode.{self:?}")
     }
 
     #[getter]

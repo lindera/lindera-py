@@ -15,7 +15,9 @@ def basic_tokenization_example():
     # Create a tokenizer with default settings
     builder = lindera.TokenizerBuilder()
     builder = builder.set_mode("normal")
-    builder = builder.set_dictionary("embedded://ipadic")  # or "embedded://unidic", "embedded://ko-dic", "embedded://cc-cedict"
+    builder = builder.set_dictionary(
+        "embedded://ipadic"
+    )  # or "embedded://unidic", "embedded://ko-dic", "embedded://cc-cedict"
 
     tokenizer = builder.build()
 
@@ -29,7 +31,7 @@ def basic_tokenization_example():
     print(f"Number of tokens: {len(tokens)}")
     print("Tokens:")
     for i, token in enumerate(tokens):
-        print(f"  {i+1}. Text: '{token.text}', Position: {token.position}, Details: {token.details[:3]}")
+        print(f"  {i + 1}. Text: '{token.text}', Position: {token.position}, Details: {token.details[:3]}")
 
 
 def character_filter_example():
@@ -46,7 +48,7 @@ def character_filter_example():
     unicode_filter = lindera.CharacterFilter.unicode_normalize("nfkc")
 
     # 3. Japanese iteration mark filter
-    iteration_filter = lindera.CharacterFilter.japanese_iteration_mark(normalize_kanji=True, normalize_kana=True)
+    # iteration_filter = lindera.CharacterFilter.japanese_iteration_mark(normalize_kanji=True, normalize_kana=True)
 
     # Test text with various characters
     test_texts = [
@@ -77,7 +79,7 @@ def token_filter_example():
     # Create token filters
     lowercase_filter = lindera.TokenFilter.lowercase()
     length_filter = lindera.TokenFilter.length(min=2, max=10)
-    stop_words_filter = lindera.TokenFilter.stop_words(["は", "です"])
+    # stop_words_filter = lindera.TokenFilter.stop_words(["は", "です"])
 
     print("Original tokens:")
     for token in tokens:
@@ -133,7 +135,7 @@ def metadata_example():
     import lindera
 
     # Create default metadata
-    metadata = lindera.Metadata.default()
+    metadata = lindera.Metadata.create_default()
 
     print("Default metadata:")
     print(f"  Name: {metadata.name}")
@@ -145,7 +147,7 @@ def metadata_example():
     dict_schema = metadata.dictionary_schema
     print(f"\nDictionary schema has {dict_schema.field_count()} fields:")
     for i, field in enumerate(dict_schema.fields[:5]):  # Show first 5 fields
-        print(f"  {i+1}. {field}")
+        print(f"  {i + 1}. {field}")
     print("  ...")
 
     # Create custom metadata
@@ -204,7 +206,7 @@ def advanced_example():
 
     print("Processed tokens:")
     for i, token in enumerate(tokens):
-        print(f"  {i+1:2d}. '{token.text:8s}' | pos: {token.position:2d} | details: {token.details[:2]}")
+        print(f"  {i + 1:2d}. '{token.text:8s}' | pos: {token.position:2d} | details: {token.details[:2]}")
 
 
 def main():

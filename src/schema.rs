@@ -1,5 +1,6 @@
-use pyo3::prelude::*;
 use std::collections::HashMap;
+
+use pyo3::prelude::*;
 
 use lindera::dictionary::{FieldDefinition, FieldType, Schema};
 
@@ -26,7 +27,7 @@ impl PyFieldType {
     }
 
     fn __repr__(&self) -> String {
-        format!("FieldType.{:?}", self)
+        format!("FieldType.{self:?}")
     }
 }
 
@@ -139,7 +140,7 @@ impl PySchema {
     }
 
     #[staticmethod]
-    pub fn default() -> Self {
+    pub fn create_default() -> Self {
         Self::new(vec![
             "surface".to_string(),
             "left_context_id".to_string(),
@@ -220,8 +221,7 @@ impl PySchema {
         for (index, field_name) in self.fields.iter().enumerate() {
             if index < record.len() && record[index].trim().is_empty() {
                 return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
-                    "Field {} is missing or empty",
-                    field_name
+                    "Field {field_name} is missing or empty"
                 )));
             }
         }

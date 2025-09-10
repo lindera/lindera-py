@@ -1,9 +1,9 @@
-from lindera_py import Segmenter, Tokenizer, load_dictionary
+from lindera import Segmenter, Tokenizer, load_dictionary
 
 
 def main():
     # load the dictionary
-    dictionary = load_dictionary("ipadic")
+    dictionary = load_dictionary("embedded://ipadic")
 
     # create a segmenter
     segmenter = Segmenter("decompose", dictionary)
