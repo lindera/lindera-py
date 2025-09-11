@@ -1,10 +1,26 @@
-[tool.poetry]
+[tool.maturin]
+module-name = "lindera"
+
+[project]
 name = "lindera-python"
-version = "1.0.0"
-description = ""
-authors = ["Minoru Osuka <minoru.osuka@gmail.com>"]
-license = "MIT"
+version = "1.0.1"
+description = "Python binding for Lindera (no embedded dictionaries)"
+authors = [{ name = "Minoru Osuka", email = "minoru.osuka@gmail.com" }]
+license = { text = "MIT" }
 readme = "README.md"
+keywords = ["morphological", "analysis", "library", "python"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.8"
 
 [tool.poetry.dependencies]
 python = "^3.13"
