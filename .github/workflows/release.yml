@@ -302,8 +302,9 @@ jobs:
           mkdir -p "${TEMP_DIR}"
           cp -r . "${TEMP_DIR}/"
           cd "${TEMP_DIR}"
-          sed -i 's/^name = "lindera-python"/name = "${{ matrix.features.package_name }}"/' pyproject.toml
-          sed -i 's/^description = ".*"/description = "${{ matrix.features.package_description }}"/' pyproject.toml
+          # macOS uses BSD sed which requires empty string for -i
+          sed -i '' 's/^name = "lindera-python"/name = "${{ matrix.features.package_name }}"/' pyproject.toml
+          sed -i '' 's/^description = ".*"/description = "${{ matrix.features.package_description }}"/' pyproject.toml
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
