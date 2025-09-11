@@ -104,7 +104,7 @@ jobs:
 
       - name: Create package-specific pyproject.toml
         run: |
-          # 一時ディレクトリを作成して作業
+          # Work in a temporary directory
           mkdir -p build-${{ matrix.features.package_name }}
           cp -r . build-${{ matrix.features.package_name }}/
           cd build-${{ matrix.features.package_name }}
@@ -231,7 +231,7 @@ jobs:
 
       - name: Create package-specific pyproject.toml
         run: |
-          # 一時ディレクトリを作成して作業
+          # Work in a temporary directory
           mkdir -p build-${{ matrix.features.package_name }}
           cp -r . build-${{ matrix.features.package_name }}/
           cd build-${{ matrix.features.package_name }}
@@ -294,7 +294,7 @@ jobs:
 
       - name: Create package-specific pyproject.toml
         run: |
-          # 一時ディレクトリを作成して作業
+          # Work in a temporary directory
           mkdir -p build-${{ matrix.features.package_name }}
           cp -r . build-${{ matrix.features.package_name }}/
           cd build-${{ matrix.features.package_name }}
