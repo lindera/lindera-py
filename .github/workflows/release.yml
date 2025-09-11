@@ -105,9 +105,10 @@ jobs:
       - name: Create package-specific pyproject.toml
         run: |
           # Work in a temporary directory
-          mkdir -p build-${{ matrix.features.package_name }}
-          cp -r . build-${{ matrix.features.package_name }}/
-          cd build-${{ matrix.features.package_name }}
+          TEMP_DIR="/tmp/build-${{ matrix.features.package_name }}"
+          mkdir -p "${TEMP_DIR}"
+          cp -r . "${TEMP_DIR}/"
+          cd "${TEMP_DIR}"
           sed -i 's/^name = "lindera-python"/name = "${{ matrix.features.package_name }}"/' pyproject.toml
           sed -i 's/^description = ".*"/description = "${{ matrix.features.package_description }}"/' pyproject.toml
 
@@ -119,7 +120,7 @@ jobs:
           sccache: "false"
           manylinux: auto
           before-script-linux: "yum install openssl-devel devtoolset-10-libatomic-devel perl-IPC-Cmd -y"
-          working-directory: build-${{ matrix.features.package_name }}
+          working-directory: /tmp/build-${{ matrix.features.package_name }}
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -168,9 +169,10 @@ jobs:
       - name: Create package-specific pyproject.toml
         run: |
           # Work in a temporary directory
-          mkdir -p build-${{ matrix.features.package_name }}
-          cp -r . build-${{ matrix.features.package_name }}/
-          cd build-${{ matrix.features.package_name }}
+          TEMP_DIR="/tmp/build-${{ matrix.features.package_name }}"
+          mkdir -p "${TEMP_DIR}"
+          cp -r . "${TEMP_DIR}/"
+          cd "${TEMP_DIR}"
           sed -i 's/^name = "lindera-python"/name = "${{ matrix.features.package_name }}"/' pyproject.toml
           sed -i 's/^description = ".*"/description = "${{ matrix.features.package_description }}"/' pyproject.toml
 
@@ -182,7 +184,7 @@ jobs:
           sccache: "false"
           manylinux: auto
           before-script-linux: "apt-get update && apt-get install libssl-dev pkg-config -y"
-          working-directory: build-${{ matrix.features.package_name }}
+          working-directory: /tmp/build-${{ matrix.features.package_name }}
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -232,9 +234,10 @@ jobs:
       - name: Create package-specific pyproject.toml
         run: |
           # Work in a temporary directory
-          mkdir -p build-${{ matrix.features.package_name }}
-          cp -r . build-${{ matrix.features.package_name }}/
-          cd build-${{ matrix.features.package_name }}
+          TEMP_DIR="/tmp/build-${{ matrix.features.package_name }}"
+          mkdir -p "${TEMP_DIR}"
+          cp -r . "${TEMP_DIR}/"
+          cd "${TEMP_DIR}"
           sed -i 's/^name = "lindera-python"/name = "${{ matrix.features.package_name }}"/' pyproject.toml
           sed -i 's/^description = ".*"/description = "${{ matrix.features.package_description }}"/' pyproject.toml
 
@@ -244,7 +247,7 @@ jobs:
           target: ${{ matrix.platform.target }}
           args: --release --out ../dist --find-interpreter --features=${{ matrix.features.value }}
           sccache: "false"
-          working-directory: build-${{ matrix.features.package_name }}
+          working-directory: /tmp/build-${{ matrix.features.package_name }}
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -295,9 +298,10 @@ jobs:
       - name: Create package-specific pyproject.toml
         run: |
           # Work in a temporary directory
-          mkdir -p build-${{ matrix.features.package_name }}
-          cp -r . build-${{ matrix.features.package_name }}/
-          cd build-${{ matrix.features.package_name }}
+          TEMP_DIR="/tmp/build-${{ matrix.features.package_name }}"
+          mkdir -p "${TEMP_DIR}"
+          cp -r . "${TEMP_DIR}/"
+          cd "${TEMP_DIR}"
           sed -i 's/^name = "lindera-python"/name = "${{ matrix.features.package_name }}"/' pyproject.toml
           sed -i 's/^description = ".*"/description = "${{ matrix.features.package_description }}"/' pyproject.toml
 
@@ -307,7 +311,7 @@ jobs:
           target: ${{ matrix.platform.target }}
           args: --release --out ../dist --find-interpreter --features=${{ matrix.features.value }}
           sccache: "false"
-          working-directory: build-${{ matrix.features.package_name }}
+          working-directory: /tmp/build-${{ matrix.features.package_name }}
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
