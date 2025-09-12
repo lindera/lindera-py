@@ -68,7 +68,7 @@ jobs:
     name: Linux
     needs: [test]
     strategy:
-      max-parallel: 2
+      max-parallel: 1
       matrix:
         platform:
           - runner: ubuntu-latest
@@ -133,7 +133,7 @@ jobs:
     name: Linux2
     needs: [test]
     strategy:
-      max-parallel: 2
+      max-parallel: 1
       matrix:
         platform:
           - runner: ubuntu-latest
@@ -198,7 +198,7 @@ jobs:
     name: Windows
     needs: [test]
     strategy:
-      max-parallel: 2
+      max-parallel: 1
       matrix:
         platform:
           - runner: windows-latest
@@ -268,11 +268,11 @@ jobs:
     name: MacOS
     needs: [test]
     strategy:
-      max-parallel: 2
+      max-parallel: 1
       matrix:
         platform:
-          - runner: macos-latest
-            target: x86_64
+          # - runner: macos-latest
+          #   target: x86_64
           - runner: macos-latest
             target: aarch64
         toolchain: [stable]
