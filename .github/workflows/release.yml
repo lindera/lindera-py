@@ -105,13 +105,9 @@ jobs:
 
       - name: Create package-specific pyproject.toml
         run: |
-          # Work in a temporary directory
-          TEMP_DIR="/tmp/build-${{ matrix.features.package_name }}"
-          mkdir -p "${TEMP_DIR}"
-          cp -r . "${TEMP_DIR}/"
-          cd "${TEMP_DIR}"
-          sed -i 's/^name = "lindera-python"/name = "${{ matrix.features.package_name }}"/' pyproject.toml
-          sed -i 's/^description = ".*"/description = "${{ matrix.features.package_description }}"/' pyproject.toml
+          # Modify pyproject.toml in place
+          sed -i "s/^name = \"lindera-python\"/name = \"${{ matrix.features.package_name }}\"/" pyproject.toml
+          sed -i "s/^description = \".*\"/description = \"${{ matrix.features.package_description }}\"/" pyproject.toml
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
@@ -123,7 +119,6 @@ jobs:
           sccache: "true"
           manylinux: auto
           before-script-linux: "yum install openssl-devel devtoolset-10-libatomic-devel perl-IPC-Cmd -y"
-          working-directory: /tmp/build-${{ matrix.features.package_name }}
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -172,13 +167,9 @@ jobs:
 
       - name: Create package-specific pyproject.toml
         run: |
-          # Work in a temporary directory
-          TEMP_DIR="/tmp/build-${{ matrix.features.package_name }}"
-          mkdir -p "${TEMP_DIR}"
-          cp -r . "${TEMP_DIR}/"
-          cd "${TEMP_DIR}"
-          sed -i 's/^name = "lindera-python"/name = "${{ matrix.features.package_name }}"/' pyproject.toml
-          sed -i 's/^description = ".*"/description = "${{ matrix.features.package_description }}"/' pyproject.toml
+          # Modify pyproject.toml in place
+          sed -i "s/^name = \"lindera-python\"/name = \"${{ matrix.features.package_name }}\"/" pyproject.toml
+          sed -i "s/^description = \".*\"/description = \"${{ matrix.features.package_description }}\"/" pyproject.toml
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
@@ -190,7 +181,6 @@ jobs:
           sccache: "true"
           manylinux: auto
           before-script-linux: "apt-get update && apt-get install libssl-dev pkg-config -y"
-          working-directory: /tmp/build-${{ matrix.features.package_name }}
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -241,18 +231,11 @@ jobs:
       - name: Create package-specific pyproject.toml
         shell: pwsh
         run: |
-          # Work in a temporary directory
-          $TEMP_DIR = "$env:TEMP\build-${{ matrix.features.package_name }}"
-          New-Item -ItemType Directory -Force -Path $TEMP_DIR
-          Copy-Item -Recurse -Force * $TEMP_DIR
-          Set-Location $TEMP_DIR
           # Replace package name and description in pyproject.toml
           $content = Get-Content pyproject.toml
           $content = $content -replace '^name = "lindera-python"', 'name = "${{ matrix.features.package_name }}"'
           $content = $content -replace '^description = ".*"', 'description = "${{ matrix.features.package_description }}"'
           Set-Content -Path pyproject.toml -Value $content
-          # Export the path for next step
-          echo "TEMP_BUILD_DIR=$TEMP_DIR" >> $env:GITHUB_ENV
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
@@ -262,7 +245,6 @@ jobs:
           target: ${{ matrix.platform.target }}
           args: --release --out dist --find-interpreter --features=${{ matrix.features.value }}
           sccache: "true"
-          working-directory: ${{ env.TEMP_BUILD_DIR }}
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -313,14 +295,9 @@ jobs:
 
       - name: Create package-specific pyproject.toml
         run: |
-          # Work in a temporary directory
-          TEMP_DIR="/tmp/build-${{ matrix.features.package_name }}"
-          mkdir -p "${TEMP_DIR}"
-          cp -r . "${TEMP_DIR}/"
-          cd "${TEMP_DIR}"
           # macOS uses BSD sed which requires empty string for -i
-          sed -i '' 's/^name = "lindera-python"/name = "${{ matrix.features.package_name }}"/' pyproject.toml
-          sed -i '' 's/^description = ".*"/description = "${{ matrix.features.package_description }}"/' pyproject.toml
+          sed -i '' "s/^name = \"lindera-python\"/name = \"${{ matrix.features.package_name }}\"/" pyproject.toml
+          sed -i '' "s/^description = \".*\"/description = \"${{ matrix.features.package_description }}\"/" pyproject.toml
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
@@ -330,7 +307,6 @@ jobs:
           target: ${{ matrix.platform.target }}
           args: --release --out dist --find-interpreter --features=${{ matrix.features.value }}
           sccache: "true"
-          working-directory: /tmp/build-${{ matrix.features.package_name }}
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -382,7 +358,7 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v2
         with:
-          files: ./dist/*
+          files: wheels-*/*
           name: Release ${{ github.ref_name }}
           tag_name: ${{ github.ref_name }}
           draft: false
