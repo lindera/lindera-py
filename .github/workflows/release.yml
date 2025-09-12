@@ -49,6 +49,11 @@ jobs:
           - runner: windows-latest
             target: x86_64-pc-windows-msvc
         toolchain: [stable]
+        features:
+          - value: "embedded-ipadic"
+            package_name: "lindera-python-ipadic"
+            package_description: "Python binding for Lindera with IPADIC dictionary"
+
     runs-on: ${{ matrix.platform.runner }}
     steps:
       - name: Run checkout
@@ -62,7 +67,7 @@ jobs:
           components: rustfmt, clippy
 
       - name: Run test
-        run: cargo test --target "${{ matrix.platform.target }}" --all-features
+        run: cargo test --target "${{ matrix.platform.target }}" --features="${{ matrix.features.value }}"
 
   linux:
     name: Linux
