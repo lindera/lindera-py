@@ -68,6 +68,7 @@ jobs:
     name: Linux
     needs: [test]
     strategy:
+      max-parallel: 2
       matrix:
         platform:
           - runner: ubuntu-latest
@@ -117,7 +118,7 @@ jobs:
         with:
           target: ${{ matrix.platform.target }}
           args: --release --out ../dist --find-interpreter --features=${{ matrix.features.value }}
-          sccache: "false"
+          sccache: "true"
           manylinux: auto
           before-script-linux: "yum install openssl-devel devtoolset-10-libatomic-devel perl-IPC-Cmd -y"
           working-directory: /tmp/build-${{ matrix.features.package_name }}
@@ -132,6 +133,7 @@ jobs:
     name: Linux2
     needs: [test]
     strategy:
+      max-parallel: 2
       matrix:
         platform:
           - runner: ubuntu-latest
@@ -181,7 +183,7 @@ jobs:
         with:
           target: ${{ matrix.platform.target }}
           args: --release --out ../dist --find-interpreter --features=${{ matrix.features.value }}
-          sccache: "false"
+          sccache: "true"
           manylinux: auto
           before-script-linux: "apt-get update && apt-get install libssl-dev pkg-config -y"
           working-directory: /tmp/build-${{ matrix.features.package_name }}
@@ -196,6 +198,7 @@ jobs:
     name: Windows
     needs: [test]
     strategy:
+      max-parallel: 2
       matrix:
         platform:
           - runner: windows-latest
@@ -244,14 +247,16 @@ jobs:
           $content = $content -replace '^name = "lindera-python"', 'name = "${{ matrix.features.package_name }}"'
           $content = $content -replace '^description = ".*"', 'description = "${{ matrix.features.package_description }}"'
           Set-Content -Path pyproject.toml -Value $content
+          # Export the path for next step
+          echo "TEMP_BUILD_DIR=$TEMP_DIR" >> $env:GITHUB_ENV
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
           args: --release --out ..\dist --find-interpreter --features=${{ matrix.features.value }}
-          sccache: "false"
-          working-directory: ${{ env.TEMP }}\build-${{ matrix.features.package_name }}
+          sccache: "true"
+          working-directory: ${{ env.TEMP_BUILD_DIR }}
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
@@ -263,6 +268,7 @@ jobs:
     name: MacOS
     needs: [test]
     strategy:
+      max-parallel: 2
       matrix:
         platform:
           - runner: macos-latest
@@ -315,7 +321,7 @@ jobs:
         with:
           target: ${{ matrix.platform.target }}
           args: --release --out ../dist --find-interpreter --features=${{ matrix.features.value }}
-          sccache: "false"
+          sccache: "true"
           working-directory: /tmp/build-${{ matrix.features.package_name }}
 
       - name: Upload wheels
